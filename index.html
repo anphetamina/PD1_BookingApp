@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>s264014 WebApp2019</title>
+    <link rel="stylesheet" href="src/css/style.css"/>
+    <script type="text/javascript">
+        var N = 6;
+        var M = 10;
+
+        class Seat {
+            constructor(row,column) {
+                this.row = row;
+                this.column = column;
+                this.state = "free";
+            }
+        }
+
+
+        class BookingView {
+            constructor(parent, name) {
+                this.parent = parent; // divMain
+                this.name = name;
+                this.label = document.createTextNode("Caricamento...");
+                this.parent.appendChild(this.label);
+                this.createCabin();
+                this.makeButtons();
+            }
+
+            createCabin() {
+                this.table = document.createElement('table');
+                this.parent.appendChild(this.table);
+                for (let i = 0; i < N; i++) {
+                    let row = this.table.insertRow(i);
+                    for (let j = 0; j < M; j++) {
+                        let cell = row.insertCell(j);
+                        let id = (i+1).toString()+String.fromCharCode("A".charCodeAt(0)+j);
+                        cell.innerHTML = id;
+                        cell.setAttribute('id', id);
+                        cell.setAttribute('class', 'free');
+                    }
+                }
+            }
+
+            makeButtons() {
+                this.bookButton = makeButton('bbook', 'Prenota');
+                this.parent.appendChild(this.bookButton);
+                this.refreshButton = makeButton('brefresh', 'Aggiorna');
+                this.parent.appendChild(this.refreshButton);
+
+                function makeButton(id, label) {
+                    let button = document.createElement('button');
+                    button.setAttribute('id', id);
+                    button.setAttribute('type', 'submit');
+                    let text = document.createTextNode(label);
+                    button.appendChild(text);
+                    return button;
+                }
+            }
+
+            getSeatId(cell) {
+                return cell.getAttribute('id');
+            }
+
+            getState(id) {
+                let state = document.getElementById(id).getAttribute('class');
+                return state;
+            }
+
+            refreshSeat(id,state) {
+                let cell = document.getElementById(id);
+                cell.setAttribute('class', state);
+            }
+
+            addSelectListener(listener) {
+                let cells = this.table.getElementsByTagName('td');
+                for (let i = 0; i < cells.length; i++) {
+                    cells[i].addEventListener('click', listener);
+                }
+            }
+
+            addBookListener(listener) {
+                this.bookButton.addEventListener('click', listener);
+            }
+
+            addRefreshListener(listener) {
+                this.refreshButton.addEventListener('click', listener);
+            }
+        }
+
+        class BookingController {
+            constructor(model, view) {
+                this.model = model;
+                this.view = view;
+                let _this = this;
+                this.view.addSelectListener(function (event) {
+                    _this.selectSeat(_this.view.getSeatId(event.target));
+                });
+                this.view.addBookListener(function (event) {
+                    _this.bookSeats();
+                });
+                this.view.addRefreshListener(function (event) {
+                    _this.refreshSeats();
+                });
+            }
+
+            selectSeat(id) {
+                let new_state = 'selected';
+                let state = this.view.getState(id);
+                if(state == 'booked') return;
+                else if(state == 'selected') new_state = 'free';
+                this.model.updateSeat(id, new_state);
+                this.view.refreshSeat(id, new_state);
+            }
+
+            bookSeats() {
+                for (let key in this.model.seats) {
+                    (this.model.seats[key].state == 'selected')? this.model.updateSeat(key, 'booked') : undefined;
+                }
+            }
+
+            refreshSeats() {
+
+            }
+        }
+
+        class BookingModel {
+            constructor() {
+                this.seats = new Array(N*M);
+                for (let i = 0; i < N; i++) {
+                    for (let j = 0; j < M; j++) {
+                        let x = (i+1).toString();
+                        let y = String.fromCharCode("A".charCodeAt(0)+j);
+                        this.seats[x+y] = new Seat(i,y);
+                    }
+                }
+            }
+
+            updateSeat(id,expr) {
+                this.seats[id].state = expr;
+            }
+        }
+    </script>
+</head>
+<body>
+<header>
+    header
+</header>
+<div id="mainDiv">
+    main div
+</div>
+<script>
+    let mainDiv = document.getElementById("mainDiv");
+    let model = new BookingModel();
+    let view = new BookingView(mainDiv, "view");
+    let controller = new BookingController(model,view);
+</script>
+<footer>
+    footer
+</footer>
+</body>
+</html>

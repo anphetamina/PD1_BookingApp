@@ -1,0 +1,23 @@
+table, tr, th, td {
+    border: 2px solid black;
+    padding: 20px;
+    margin: 10px;
+    color: white;
+}
+
+.bought {
+    background-color: red;
+}
+
+.booked {
+    background-color: orange;
+}
+
+.selected {
+    background-color: yellow;
+    color: black;
+}
+
+.free {
+    background-color: green;
+}
