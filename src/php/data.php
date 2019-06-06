@@ -1,16 +1,16 @@
 <?php
 include "db.php";
 
-$rows = 6;
-$columns = 10;
+$rows = 10;
+$columns = 6;
 
 if (isset($_POST['action'])) {
 
     $action = $_POST['action'];
 
     if($action == 'getDims') {
-        $dimensions = array($rows, $columns);
-        echo json_encode($dimensions);
+        $dim = array($rows, $columns);
+        echo json_encode($dim);
     }
 
     if ($action == 'getSeats') {
