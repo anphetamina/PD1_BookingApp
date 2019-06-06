@@ -17,4 +17,8 @@ if (isset($_POST['action'])) {
         echo db_get_seats();
     }
 
+    if ($action == 'getSeatState') {
+        echo db_get_seat_state($_POST['id']);
+    }
+
 }

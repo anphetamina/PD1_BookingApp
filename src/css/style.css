@@ -5,6 +5,16 @@ table, tr, th, td {
     color: white;
 }
 
+div {
+    border: 2px solid black;
+    padding: 20px;
+    margin: 10px;
+}
+
+button, input {
+    margin: 5px;
+}
+
 .bought {
     background-color: red;
 }
