@@ -3,10 +3,10 @@ include "db.php";
 
 session_start();
 
-$user = null;
+global $rows;
+global $columns;
 
-$rows = 10;
-$columns = 6;
+
 
 
 if (isset($_POST['action'])) {

@@ -18,18 +18,18 @@ function login($user, $psw) {
         $stmt->bind_param('s', $user);
         try {
             if(!$stmt->execute())
-                throw new Exception();
+                throw new Exception('login failed');
             $stmt->bind_result($result);
             $stmt->fetch();
             $result = password_verify($psw, $result);
             $stmt->close();
         } catch (Exception $exception) {
-            $connection->rollback();
-            print 'Rollback ' . $exception->getMessage();
+            /*$connection->rollback();
+            print 'Rollback ' . $exception->getMessage();*/
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ROLLBACK;
+            return DB_ERROR;
         }
     }
 
