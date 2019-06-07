@@ -8,17 +8,21 @@ if (isset($_POST['action'])) {
 
     $action = $_POST['action'];
 
+    if($action == 'initDB') {
+        echo db_init();
+    }
+
     if($action == 'getDims') {
         $dim = array($rows, $columns);
         echo json_encode($dim);
     }
 
     if ($action == 'getSeats') {
-        echo db_get_seats();
+        echo json_encode(db_get_seats());
     }
 
     if ($action == 'getSeatState') {
-        echo db_get_seat_state($_POST['id']);
+        echo json_encode(db_get_seat_state($_POST['id']));
     }
 
 }

@@ -7,18 +7,15 @@ class MapController {
         this.model.init(function (data) {
             _this.view.printMap(data);
             _this.view.addRefreshListener(function (event) {
-                _this.refreshSeat(_this.view.getSeatId(event.target));
+                _this.selectSeat(_this.view.getSeatId(event.target));
             });
         });
     }
 
+
     selectSeat(id) {
-
-    }
-
-    refreshSeat(id) {
         let _this = this;
-        this.model.refreshSeat(id, function (new_state) {
+        this.model.updateSeat(id, function (new_state) {
             _this.view.refreshCell(id, new_state);
         });
     }

@@ -1,11 +1,17 @@
 <?php
 
+define('DB_OK', 0);
+define('DB_INIT', 1);
+define('DB_ERROR', -1);
+define('DB_ROLLBACK', -2);
+
 function db_get_vars() {
+
     $connection = new mysqli('127.0.0.1', 'root', '', 'booking_app');
     $stmt = $connection->init();
 
     try {
-        if ($connection->connect_errno)
+        if (mysqli_connect_error($connection))
             throw new Exception('Connection failed');
 
         $query = "select rows, columns from variable for update";
@@ -17,68 +23,38 @@ function db_get_vars() {
 
         $connection->autocommit(false);
 
+        if (!$stmt->execute()) {
+            throw new Exception('db_get_vars failed');
+        }
         $result = $stmt->get_result();
 
         while ($row = $result->fetch_assoc()) {
-            $dims[] = $row;
+            $dims = $row;
         }
 
         $connection->commit();
         $stmt->close();
         $connection->close();
 
-        return json_encode($dims);
+        return $dims;
 
     } catch (Exception $e) {
         $connection->rollback();
-        echo 'Rollback ' . $e->getMessage();
+        print 'Rollback ' . $e->getMessage();
         $connection->autocommit(true);
         if($stmt!=null) $stmt->close();
         $connection->close();
+        return DB_ROLLBACK;
     }
-
-    /*$connection = new mysqli('127.0.0.1', 'root', '', 'booking_app');
-    $stmt = $connection->init();
-
-    try {
-        if ($connection->connect_errno)
-            throw new Exception('Connection failed');
-
-        $query = "select rows, columns from variable for update";
-
-        $dims = array();
-
-        if ($stmt = $connection->prepare($query)) {
-            $connection->autocommit(false);
-            if (!$stmt->execute()) {
-                throw new Exception('select rows, columns from variable failed');
-            }
-            $result = $stmt->get_result();
-            while ($row = $result->fetch_assoc()) {
-                $dims[] = $row;
-            }
-
-            $connection->commit();
-            $stmt->close();
-            $connection->close();
-            return json_encode($dims);
-        }
-
-    } catch (Exception $e) {
-        $connection->rollback();
-        echo 'Rollback ' . $e->getMessage();
-        $connection->autocommit(true);
-        if($stmt!=null) $stmt->close();
-        $connection->close();
-    }*/
 }
 
 function db_get_seats() {
+
     $connection = new mysqli('127.0.0.1', 'root', '', 'booking_app');
     $stmt = $connection->init();
 
     try {
-        if ($connection->connect_errno)
+        if (mysqli_connect_error($connection))
             throw new Exception('Connection failed');
 
         $query = "select seat_id, state, user from seat for update";
@@ -98,53 +74,17 @@ function db_get_seats() {
             $connection->commit();
             $stmt->close();
             $connection->close();
-            return json_encode($seats);
+            return $seats;
         }
 
     } catch (Exception $e) {
         $connection->rollback();
-        echo 'Rollback ' . $e->getMessage();
+        print 'Rollback ' . $e->getMessage();
         $connection->autocommit(true);
         if($stmt!=null) $stmt->close();
         $connection->close();
+        return DB_ROLLBACK;
     }
-
-
-    /*$connection = new mysqli('127.0.0.1', 'root', '', 'booking_app');
-    $stmt = $connection->init();
-
-    try {
-        if ($connection->connect_errno)
-            throw new Exception('Connection failed');
-
-        $query = "select seat_id, state, user from seat for update";
-
-        $seats = array();
-
-        if (!$stmt = $connection->prepare($query))
-            throw new Exception('db_get_seats failed');
-
-        $connection->autocommit(false);
-
-        $result = $stmt->get_result();
-
-        while ($row = $result->fetch_assoc()) {
-            $seats[] = $row;
-        }
-
-        $connection->commit();
-        $stmt->close();
-        $connection->close();
-
-        return json_encode($seats);
-
-    } catch (Exception $e) {
-        $connection->rollback();
-        echo 'Rollback ' . $e->getMessage();
-        $connection->autocommit(true);
-        if($stmt!=null) $stmt->close();
-        $connection->close();
-    }*/
 }
 
 function db_get_seat_state($id) {
@@ -153,7 +93,7 @@ function db_get_seat_state($id) {
     $stmt = $connection->init();
 
     try {
-        if ($connection->connect_errno)
+        if (mysqli_connect_error($connection))
             throw new Exception('Connection failed');
 
         $query = "select state from seat where seat_id = ? for update";
@@ -177,30 +117,125 @@ function db_get_seat_state($id) {
 
     } catch (Exception $e) {
         $connection->rollback();
-        echo 'Rollback ' . $e->getMessage();
+        print 'Rollback ' . $e->getMessage();
         $connection->autocommit(true);
         if($stmt!=null) $stmt->close();
         $connection->close();
+        return DB_ROLLBACK;
     }
+}
 
-    /*$connection = new mysqli('127.0.0.1', 'root', '', 'booking_app');
+function db_count($table) {
 
-    if ($connection->connect_errno) {
-        printf('[db_get_seat_state] connection error');
+    $connection = new mysqli('127.0.0.1', 'root', '', 'booking_app');
+
+    try {
+        if (mysqli_connect_error($connection))
+            throw new Exception('Connection failed');
+
+        $query = 'select * from ' . $table;
+
+        $connection->autocommit(false);
+
+        $result = $connection->query($query);
+
+        $connection->commit();
+        $connection->close();
+
+        $count = $result->num_rows;
+        $result->close();
+
+        return $count;
+
+    } catch (Exception $e) {
+        $connection->rollback();
+        echo 'Rollback ' . $e->getMessage();
+        $connection->autocommit(true);
+        $connection->close();
     }
+}
 
-    $query = "select state from seat where seat_id=?";
+function db_delete($table) {
+    $connection = new mysqli('127.0.0.1', 'root', '', 'booking_app');
 
-    if ($stmt = $connection->prepare($query)) {
-        $stmt->bind_param(i, $id);
-        $stmt->execute();
-        $stmt->bind_result($state);
-        while ($stmt->fetch()) {
-            printf("[db_get_seat_state] %s", $state);
+    try {
+        if (mysqli_connect_error($connection))
+            throw new Exception('Connection failed');
+
+        $query = "delete from " . $table;
+
+        $connection->autocommit(false);
+
+        if (!$connection->query($query)) {
+            throw new Exception;
         }
-        return json_encode($state);
-        $stmt->close();
+
+        $connection->commit();
+        $connection->close();
+
+
+        return true;
+
+    } catch (Exception $e) {
+        $connection->rollback();
+        print 'Rollback ' . $e->getMessage();
+        $connection->autocommit(true);
+        $connection->close();
     }
 
-    $connection->close();*/
+    return false;
+}
+
+function db_init() {
+    global $rows;
+    global $columns;
+
+    $dims = db_get_vars();
+
+    if ($dims['rows'] != $rows || $dims['columns'] != $columns) {
+
+        db_delete('seat');
+
+        $connection = new mysqli('127.0.0.1', 'root', '', 'booking_app');
+
+        try {
+            if (mysqli_connect_error($connection))
+                throw new Exception('Connection failed');
+            $connection->autocommit(false);
+
+            $query = "update variable set rows=?, columns=?";
+
+            if(!$stmt = $connection->prepare($query))
+                throw new Exception('Insert failed');
+            $stmt->bind_param("ii", $rows, $columns);
+            $stmt->execute();
+
+            $stmt = $connection->init();
+
+            $index = 0;
+            for ($i = 0; $i < $rows; $i++) {
+                for ($j = 0; $j < $columns; $j++) {
+                    $query = "insert into seat (row_id, seat_id, state, user) values (?, ?, 'free', 'null')";
+                    $stmt = $connection->prepare($query);
+                    $stmt->bind_param("is", $index,strval(($i+1).chr(65+$j)));
+                    $stmt->execute();
+                    $index++;
+                }
+            }
+
+            $stmt->close();
+            $connection->commit();
+            $connection->close();
+
+        } catch (Exception $e) {
+            $connection->rollback();
+            echo 'Rollback ' . $e->getMessage();
+            $connection->autocommit(true);
+            $connection->close();
+            return DB_ERROR;
+        }
+
+    }
+
+    return DB_OK;
 }
