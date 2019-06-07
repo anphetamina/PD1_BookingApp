@@ -1,3 +1,4 @@
-function UserModel() {
-
+class UserModel {
+    constructor() {
+    }
 }

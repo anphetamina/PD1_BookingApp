@@ -5,6 +5,20 @@ define('DB_INIT', 1);
 define('DB_ERROR', -1);
 define('DB_ROLLBACK', -2);
 
+define('HOST', '127.0.0.1');
+define('USER', 'root');
+define('PASS', '');
+define('DB', 'booking_app');
+
+function db_get_connection() {
+    $connection = mysqli_connect(HOST, USER, PASS, DB);
+    if (!$connection) {
+        die('Connection error '.mysqli_errno().' '.mysqli_connect_error());
+    }
+    $connection->autocommit(false);
+    return $connection;
+}
+
 function db_get_vars() {
 
     $connection = new mysqli('127.0.0.1', 'root', '', 'booking_app');

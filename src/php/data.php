@@ -1,8 +1,13 @@
 <?php
 include "db.php";
 
+session_start();
+
+$user = null;
+
 $rows = 10;
 $columns = 6;
+
 
 if (isset($_POST['action'])) {
 
@@ -22,7 +27,10 @@ if (isset($_POST['action'])) {
     }
 
     if ($action == 'getSeatState') {
-        echo json_encode(db_get_seat_state($_POST['id']));
+        if (isset($_POST['id'])) {
+            $id = $_POST['id'];
+            echo db_get_seat_state($id);
+        }
     }
 
 }

@@ -1,18 +1,9 @@
 class MapModel {
 
     constructor() {
-        /*this.N = 0;
-        this.M = 0;
-        this.seats = new Object();
-        this.free_seats = 0;
-        this.booked_seats = 0;
-        this.bought_seats = 0;
-        this.remote_seats = [];*/
-        this.selected_seats = [];
     }
 
     init(callback) {
-        // let _this = this;
         $.when(
             $.ajax({
                 url: 'src/php/data.php',
@@ -48,14 +39,12 @@ class MapModel {
 
 
     updateSeat(id, callback) {
-        let _this = this;
         $.ajax({
             url: 'src/php/data.php',
             type: 'POST',
             data: {action: 'getSeatState', id: id},
             success: function (result) {
                 let new_state = result;
-                _this.seats[id].state = new_state;
                 callback(new_state);
             }
         });

@@ -77,7 +77,7 @@ class MapView {
         cell.setAttribute('class', state);
     }
 
-    addRefreshListener(listener) {
+    addSelectListener(listener) {
         let cells = this.table.getElementsByTagName('td');
         for (let i = 0; i < cells.length; i++) {
             cells[i].addEventListener('click', listener);
