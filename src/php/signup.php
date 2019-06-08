@@ -3,6 +3,41 @@ include 'db.php';
 
 session_start();
 
+if (!empty($_POST)) {
+    if (isset($_POST['action'])) {
+        $action = $_POST['action'];
+
+        if ($action == 'registration') {
+            if (isset($_POST['user']) && isset($_POST['password'])) {
+                $username = $_POST['user'];
+                $password = $_POST['password'];
+
+                $response = register($username, $password);
+
+                switch ($response) {
+                    case REGISTRATION_SUCCESS:
+                        echo 'Registrazione avvenuta con successo';
+                        break;
+
+                    case USER_ALREADY_EXISTS:
+                        echo 'Username già esistente';
+                        break;
+
+                    case USER_NOT_VALID:
+                        echo 'Username non valido';
+                        break;
+
+                    case PASSWORD_NULL:
+                        echo 'Password non valida';
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+}
 
 
 function checkUser($username) {
@@ -20,8 +55,8 @@ function checkUser($username) {
             if($count>0) $result = true; // already exists
             $stmt->close();
         } catch (Exception $exception) {
-            $connection->rollback();
-            print 'Rollback ' . $exception->getMessage();
+            /*$connection->rollback();
+            print 'Rollback ' . $exception->getMessage();*/
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
@@ -52,7 +87,7 @@ function register($user, $psw) {
         $stmt->bind_param('ss', $user, $hash);
         try {
             if(!$stmt->execute())
-                throw new Exception('registration failed');
+                throw new Exception('register failed');
             $stmt->bind_result($result);
             $stmt->fetch();
             $result = password_verify($psw, $result);

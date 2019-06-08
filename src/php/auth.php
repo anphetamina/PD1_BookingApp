@@ -3,12 +3,6 @@ include 'db.php';
 
 session_start();
 
-if (isset($_COOKIE)) {
-    foreach ($_COOKIE as $key => $value) {
-        echo $key . ' ' . $value;
-    }
-}
-
 
 function login($user, $psw) {
     $connection = db_get_connection();

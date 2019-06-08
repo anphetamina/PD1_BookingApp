@@ -8,12 +8,17 @@ define('DB_INIT', 1);
 define('DB_ERROR', -1);
 define('DB_ROLLBACK', -2);
 
+define('REGISTRATION_SUCCESS', 1846);
+define('USER_ALREADY_EXISTS', 1926);
+define('USER_NOT_VALID', 90);
+define('PASSWORD_NULL', 17);
+define('LOGIN_SUCCESS', 71);
+define('LOGIN_ERROR', 23);
+
 define('HOST', '127.0.0.1');
 define('USER', 'root');
 define('PASS', '');
 define('DB', 'booking_app');
-
-db_init();
 
 function db_get_connection() {
     $connection = mysqli_connect(HOST, USER, PASS, DB);
@@ -135,11 +140,13 @@ function db_delete($table) {
     if($stmt = $connection->prepare($query)) {
         try {
             if(!$stmt->execute())
-                throw new Exception('db_count failed');
+                throw new Exception('db_delete failed');
             /*$stmt->bind_result($result);
             $stmt->fetch();*/
             $stmt->close();
         } catch (Exception $exception) {
+            /*$connection->rollback();
+            print 'Rollback ' . $exception->getMessage();*/
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
@@ -150,35 +157,6 @@ function db_delete($table) {
     $connection->commit();
     $connection->close();
     return $result;
-
-    /*$connection = new mysqli('127.0.0.1', 'root', '', 'booking_app');
-
-    try {
-        if (mysqli_connect_error($connection))
-            throw new Exception('Connection failed');
-
-        $query = "delete from " . $table;
-
-        $connection->autocommit(false);
-
-        if (!$connection->query($query)) {
-            throw new Exception;
-        }
-
-        $connection->commit();
-        $connection->close();
-
-
-        return true;
-
-    } catch (Exception $e) {
-        $connection->rollback();
-        print 'Rollback ' . $e->getMessage();
-        $connection->autocommit(true);
-        $connection->close();
-    }
-
-    return false;*/
 }
 
 function db_seat_init() {
@@ -195,10 +173,12 @@ function db_seat_init() {
                 $stmt->bind_param("s",strval(($i+1).chr(65+$j)));
                 try {
                     if(!$stmt->execute())
-                        throw new Exception('db_count failed');
+                        throw new Exception('db_seat_init failed');
                     /*$stmt->bind_result($result);
                     $stmt->fetch();*/
                 } catch (Exception $exception) {
+                    /*$connection->rollback();
+                    print 'Rollback ' . $exception->getMessage();*/
                     $connection->autocommit(true);
                     if($stmt!=null) $stmt->close();
                     $connection->close();
@@ -226,11 +206,13 @@ function db_vars_init() {
         $stmt->bind_param("ii", $rows, $columns);
         try {
             if(!$stmt->execute())
-                throw new Exception('db_get_vars failed');
+                throw new Exception('db_vars_init failed');
             /*$stmt->bind_result($result);
             $stmt->fetch();*/
             $stmt->close();
         } catch (Exception $exception) {
+            /*$connection->rollback();
+            print 'Rollback ' . $exception->getMessage();*/
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
@@ -255,43 +237,6 @@ function db_init() {
         db_delete('variable');
         db_seat_init();
         db_vars_init();
-
-        /*$connection = new mysqli('127.0.0.1', 'root', '', 'booking_app');
-
-        try {
-            if (mysqli_connect_error($connection))
-                throw new Exception('Connection failed');
-            $connection->autocommit(false);
-
-            $query = "update variable set rows=?, columns=?";
-
-            if(!$stmt = $connection->prepare($query))
-                throw new Exception('Insert failed');
-            $stmt->bind_param("ii", $rows, $columns);
-            $stmt->execute();
-
-            $stmt = $connection->init();
-
-            for ($i = 0; $i < $rows; $i++) {
-                for ($j = 0; $j < $columns; $j++) {
-                    $query = "insert into seat (seat_id, state, user) values (?, 'free', 'null')";
-                    $stmt = $connection->prepare($query);
-                    $stmt->bind_param("s",strval(($i+1).chr(65+$j)));
-                    $stmt->execute();
-                }
-            }
-
-            $stmt->close();
-            $connection->commit();
-            $connection->close();
-
-        } catch (Exception $e) {
-            $connection->rollback();
-            echo 'Rollback ' . $e->getMessage();
-            $connection->autocommit(true);
-            $connection->close();
-            return DB_ERROR;
-        }*/
 
     }
 

@@ -1,5 +1,5 @@
 <?php
-include "db.php";
+include 'db.php';
 
 session_start();
 
@@ -7,30 +7,35 @@ global $rows;
 global $columns;
 
 
+if(!empty($_POST)) {
+    if (isset($_POST['action'])) {
 
+        $action = $_POST['action'];
 
-if (isset($_POST['action'])) {
+        switch ($action) {
+            case 'initDB':
+                echo db_init();
+                break;
 
-    $action = $_POST['action'];
+            case 'getDims':
+                $dim = array($rows, $columns);
+                echo json_encode($dim);
+                break;
 
-    if($action == 'initDB') {
-        echo db_init();
-    }
+            case 'getSeats':
+                echo json_encode(db_get_seats());
+                break;
 
-    if($action == 'getDims') {
-        $dim = array($rows, $columns);
-        echo json_encode($dim);
-    }
+            case 'getSeatState':
+                if (isset($_POST['id'])) {
+                    $id = $_POST['id'];
+                    echo db_get_seat_state($id);
+                };
+                break;
 
-    if ($action == 'getSeats') {
-        echo json_encode(db_get_seats());
-    }
-
-    if ($action == 'getSeatState') {
-        if (isset($_POST['id'])) {
-            $id = $_POST['id'];
-            echo db_get_seat_state($id);
+            default:
+                break;
         }
-    }
 
+    }
 }

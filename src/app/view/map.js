@@ -26,6 +26,7 @@ class MapView {
         this.parent.appendChild(this.free_seats);
         this.parent.appendChild(this.booked_seats);
         this.parent.appendChild(this.bought_seats);
+
     }
 
     printMap(data) {
@@ -50,6 +51,9 @@ class MapView {
                         this.free_seats_count++;
                         break;
                     case 'booked':
+                        this.booked_seats_count++;
+                        break;
+                    case 'taken':
                         this.booked_seats_count++;
                         break;
                     case 'bought':
