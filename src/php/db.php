@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 $rows = 10;
 $columns = 6;
 
@@ -46,7 +48,7 @@ function db_get_vars() {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return null;
         }
     }
 
@@ -72,7 +74,7 @@ function db_get_seats() {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return null;
         }
     }
 
@@ -98,7 +100,7 @@ function db_get_seat_state($id) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return $state;
         }
     }
 
@@ -110,7 +112,7 @@ function db_get_seat_state($id) {
 function db_count($table) {
 
     $connection = db_get_connection();
-    $query = 'select count(*) from ' . $table;
+    $query = 'select count(*) from ' . $table . ' for update';
     $count = 0;
     if($stmt = $connection->prepare($query)) {
         try {
@@ -123,7 +125,7 @@ function db_count($table) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return $count;
         }
     }
 
@@ -139,18 +141,16 @@ function db_delete($table) {
     $result = false;
     if($stmt = $connection->prepare($query)) {
         try {
-            if(!$stmt->execute())
+            if(!$result = $stmt->execute())
                 throw new Exception('db_delete failed');
-            /*$stmt->bind_result($result);
-            $stmt->fetch();*/
             $stmt->close();
         } catch (Exception $exception) {
-            /*$connection->rollback();
-            print 'Rollback ' . $exception->getMessage();*/
+            $connection->rollback();
+            print 'Rollback ' . $exception->getMessage();
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return $result;
         }
     }
 
@@ -172,17 +172,15 @@ function db_seat_init() {
             if($stmt = $connection->prepare($query)) {
                 $stmt->bind_param("s",strval(($i+1).chr(65+$j)));
                 try {
-                    if(!$stmt->execute())
+                    if(!$result = $stmt->execute())
                         throw new Exception('db_seat_init failed');
-                    /*$stmt->bind_result($result);
-                    $stmt->fetch();*/
                 } catch (Exception $exception) {
-                    /*$connection->rollback();
-                    print 'Rollback ' . $exception->getMessage();*/
+                    $connection->rollback();
+                    print 'Rollback ' . $exception->getMessage();
                     $connection->autocommit(true);
                     if($stmt!=null) $stmt->close();
                     $connection->close();
-                    return DB_ERROR;
+                    return $result;
                 }
             }
         }
@@ -205,18 +203,16 @@ function db_vars_init() {
     if($stmt = $connection->prepare($query)) {
         $stmt->bind_param("ii", $rows, $columns);
         try {
-            if(!$stmt->execute())
+            if(!$result = $stmt->execute())
                 throw new Exception('db_vars_init failed');
-            /*$stmt->bind_result($result);
-            $stmt->fetch();*/
             $stmt->close();
         } catch (Exception $exception) {
-            /*$connection->rollback();
-            print 'Rollback ' . $exception->getMessage();*/
+            $connection->rollback();
+            print 'Rollback ' . $exception->getMessage();
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return $result;
         }
     }
 

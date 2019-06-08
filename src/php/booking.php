@@ -1,14 +1,5 @@
 <?php
-
 include 'db.php';
-
-session_start();
-
-if (isset($_COOKIE)) {
-    if (isset($_COOKIE['user'])) {
-        $user = $_COOKIE['user'];
-    }
-}
 
 if (!isset($_SESSION['seats'])) {
     $_SESSION['seats'] = 0;

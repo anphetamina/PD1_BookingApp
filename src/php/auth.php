@@ -1,21 +1,18 @@
 <?php
 include 'db.php';
 
-session_start();
-
-
 function login($user, $psw) {
     $connection = db_get_connection();
     $result = false;
-    $query = 'select password from user where username=?';
+    $query = "select password from user where username=? for update";
     if($stmt = $connection->prepare($query)) {
         $stmt->bind_param('s', $user);
         try {
             if(!$stmt->execute())
                 throw new Exception('login failed');
-            $stmt->bind_result($result);
+            $stmt->bind_result($hash);
             $stmt->fetch();
-            $result = password_verify($psw, $result);
+            $result = password_verify($psw, $hash);
             $stmt->close();
         } catch (Exception $exception) {
             /*$connection->rollback();
@@ -23,7 +20,7 @@ function login($user, $psw) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return false;
         }
     }
 

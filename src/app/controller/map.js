@@ -3,6 +3,9 @@ class MapController {
     constructor(model, view) {
         this.model = model;
         this.view = view;
+    }
+
+    init() {
         let _this = this;
         this.model.init(function (data) {
             _this.view.printMap(data);

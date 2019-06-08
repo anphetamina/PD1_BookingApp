@@ -1,16 +1,14 @@
 <?php
 include 'db.php';
 
-session_start();
-
 global $rows;
 global $columns;
 
 
-if(!empty($_POST)) {
-    if (isset($_POST['action'])) {
+if(!empty($_GET)) {
+    if (isset($_GET['action'])) {
 
-        $action = $_POST['action'];
+        $action = $_GET['action'];
 
         switch ($action) {
             case 'initDB':
@@ -27,11 +25,16 @@ if(!empty($_POST)) {
                 break;
 
             case 'getSeatState':
-                if (isset($_POST['id'])) {
-                    $id = $_POST['id'];
+                if (isset($_GET['id'])) {
+                    $id = $_GET['id'];
                     echo db_get_seat_state($id);
                 };
                 break;
+
+            case 'getAuth':
+
+                break;
+
 
             default:
                 break;

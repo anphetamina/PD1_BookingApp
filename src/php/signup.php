@@ -1,15 +1,15 @@
 <?php
 include 'db.php';
 
-session_start();
+register('u1@p.it', 'p1');
 
 if (!empty($_POST)) {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
 
         if ($action == 'registration') {
-            if (isset($_POST['user']) && isset($_POST['password'])) {
-                $username = $_POST['user'];
+            if (isset($_POST['username']) && isset($_POST['password'])) {
+                $username = $_POST['username'];
                 $password = $_POST['password'];
 
                 $response = register($username, $password);
@@ -44,7 +44,7 @@ function checkUser($username) {
     $connection = db_get_connection();
     $result = false;
     $count = 0;
-    $query = "select count(*) from user where user=?";
+    $query = "select count(*) from user where username=? for update";
     if($stmt = $connection->prepare($query)) {
         $stmt->bind_param('s', $username);
         try {
@@ -79,18 +79,20 @@ function register($user, $psw) {
 
     $connection = db_get_connection();
     $result = false;
-    $query = 'insert into user (user, password) values (?, ?)';
+    $query = "insert into user (username, password) values (?, ?)";
     if($stmt = $connection->prepare($query)) {
 
-        $hash = md5($psw);
+        if (!$hash = password_hash($psw, PASSWORD_DEFAULT)) {
+            $connection->close();
+            return $result;
+        }
 
         $stmt->bind_param('ss', $user, $hash);
         try {
-            if(!$stmt->execute())
+            if(!$result = $stmt->execute())
                 throw new Exception('register failed');
-            $stmt->bind_result($result);
-            $stmt->fetch();
-            $result = password_verify($psw, $result);
+            /*$stmt->bind_result($result);
+            $stmt->fetch();*/
             $stmt->close();
         } catch (Exception $exception) {
             $connection->rollback();

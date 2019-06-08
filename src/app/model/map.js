@@ -7,17 +7,17 @@ class MapModel {
         $.when(
             $.ajax({
                 url: 'src/php/data.php',
-                type: 'POST',
+                type: 'GET',
                 data: {action: 'initDB'},
             }),
             $.ajax({
                 url: 'src/php/data.php',
-                type: 'POST',
+                type: 'GET',
                 data: {action: 'getDims'},
             }),
             $.ajax({
                 url: 'src/php/data.php',
-                type: 'POST',
+                type: 'GET',
                 data: {action: 'getSeats'},
             }),
         ).done(function (res1, res2, res3) {
@@ -41,7 +41,7 @@ class MapModel {
     updateSeat(id, callback) {
         $.ajax({
             url: 'src/php/data.php',
-            type: 'POST',
+            type: 'GET',
             data: {action: 'getSeatState', id: id},
             success: function (result) {
                 let new_state = result;
