@@ -18,20 +18,23 @@
 <header>
     header
 </header>
-<div id="map-div">
+
+
+<div id="main-div">
     main div
+
+    <noscript>
+        <p>Per il corretto funzionamento del sito è necessario abilitare javascript</p>
+    </noscript>
+
 </div>
-<div id="user-div">
-    user div
-    <form action="">
-        <input type="email" placeholder="Inserisci la tua email"/>
-        <input type="password" placeholder="Password">
-        <br>
-        <button type="submit">Login</button>
-        <button type="reset">Cancella</button>
-    </form>
-    <a href="">Registrati</a>
+
+<div id="navigation-div">
+    <button id="map-button" onclick="injectMap()">Mappa</button>
+    <button id="login-button" onclick="injectLoginForm()">Login</button>
+    <button id="register-button" onclick="injectRegistrationForm()">Registrazione</button>
 </div>
+
 
 <footer>
     footer

@@ -1,26 +1,13 @@
 <?php
 
-session_start();
-
-$rows = 10;
-$columns = 6;
-
-define('DB_OK', 0);
-define('DB_INIT', 1);
-define('DB_ERROR', -1);
-define('DB_ROLLBACK', -2);
-
-define('REGISTRATION_SUCCESS', 1846);
-define('USER_ALREADY_EXISTS', 1926);
-define('USER_NOT_VALID', 90);
-define('PASSWORD_NULL', 17);
-define('LOGIN_SUCCESS', 71);
-define('LOGIN_ERROR', 23);
+global $rows;
+global $columns;
 
 define('HOST', '127.0.0.1');
 define('USER', 'root');
 define('PASS', '');
 define('DB', 'booking_app');
+
 
 function db_get_connection() {
     $connection = mysqli_connect(HOST, USER, PASS, DB);

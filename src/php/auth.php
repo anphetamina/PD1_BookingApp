@@ -1,5 +1,47 @@
 <?php
-include 'db.php';
+include 'common.php';
+
+define('LOGIN_SUCCESS', 71);
+define('LOGIN_FAILED', 90);
+define('LOGIN_ERROR', 23);
+
+if (!empty($_POST)) {
+    if (isset($_POST['action'])) {
+        $action = $_POST['action'];
+
+        if ($action == 'login' && !$_SESSION['authenticated']) {
+            if (isset($_POST['username']) && isset($_POST['password'])) {
+                $username = $_POST['username'];
+                $password = $_POST['password'];
+
+                $response = login($username, $password);
+
+                switch ($response) {
+                    case LOGIN_SUCCESS:
+                        startSession();
+                        echo 'Login effettuato';
+                        break;
+
+                    case LOGIN_FAILED:
+                        echo 'Password errata';
+                        break;
+
+                    case LOGIN_ERROR:
+                        echo 'Login error';
+                        break;
+
+                    default:
+                        echo 'Azione proibita';
+                        break;
+                }
+            }
+        }
+
+        if ($action == 'logout' && $_SESSION['authenticated']) {
+            logout();
+        }
+    }
+}
 
 function login($user, $psw) {
     $connection = db_get_connection();
@@ -20,51 +62,17 @@ function login($user, $psw) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return false;
+            return LOGIN_ERROR;
         }
     }
 
     $connection->commit();
     $connection->close();
 
-    return $result;
+    return ($result)? LOGIN_SUCCESS : LOGIN_FAILED;
 }
 
 function logout() {
-    if (ini_get("session.use_cookies")) {
-        $params = session_get_cookie_params();
-        setcookie(session_name(), '', time() - 3600*24, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
-        session_destroy();
-    }
-}
-
-function checkSession() {
+    destroySession();
 
 }
-
-function checkTime() {
-    $diff = time() - $_SESSION['time'];
-
-    if($diff > 2*60) { // minutes
-        logout();
-    }
-
-    $_SESSION['time'] = time();
-}
-
-function redirect($page) {
-    header('Location>: '.$page);
-    exit();
-}
-
-function httpsRedirect() {
-    if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
-        print 'Https request already made';
-    } else {
-        $redirect = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        header('Location: ' . $redirect);
-        exit();
-    }
-}
-
-// todo test cookie

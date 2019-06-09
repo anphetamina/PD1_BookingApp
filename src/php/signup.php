@@ -1,13 +1,17 @@
 <?php
-include 'db.php';
+include 'common.php';
 
-register('u1@p.it', 'p1');
+define('REGISTRATION_SUCCESS', 1846);
+define('REGISTRATION_FAILED', -71);
+define('USERNAME_ALREADY_EXISTS', 1926);
+define('USERNAME_NOT_VALID', 90);
+define('PASSWORD_NULL', 17);
 
 if (!empty($_POST)) {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
 
-        if ($action == 'registration') {
+        if ($action == 'registration' && !$_SESSION['authenticated']) {
             if (isset($_POST['username']) && isset($_POST['password'])) {
                 $username = $_POST['username'];
                 $password = $_POST['password'];
@@ -19,11 +23,15 @@ if (!empty($_POST)) {
                         echo 'Registrazione avvenuta con successo';
                         break;
 
-                    case USER_ALREADY_EXISTS:
+                    case REGISTRATION_FAILED:
+                        echo 'Registrazione fallita';
+                        break;
+
+                    case USERNAME_ALREADY_EXISTS:
                         echo 'Username già esistente';
                         break;
 
-                    case USER_NOT_VALID:
+                    case USERNAME_NOT_VALID:
                         echo 'Username non valido';
                         break;
 
@@ -32,6 +40,7 @@ if (!empty($_POST)) {
                         break;
 
                     default:
+                        echo 'Azione proibita';
                         break;
                 }
             }
@@ -39,6 +48,7 @@ if (!empty($_POST)) {
     }
 }
 
+// todo sanitize
 
 function checkUser($username) {
     $connection = db_get_connection();
@@ -75,16 +85,17 @@ function checkEmail($username) {
 }
 
 function register($user, $psw) {
-    if(checkUser($user) || !checkEmail($user)) return false;
+    if (checkUser($user)) return USERNAME_ALREADY_EXISTS;
+    if (!checkEmail($user)) return USERNAME_NOT_VALID;
 
     $connection = db_get_connection();
-    $result = false;
+    //$result = false;
     $query = "insert into user (username, password) values (?, ?)";
     if($stmt = $connection->prepare($query)) {
 
         if (!$hash = password_hash($psw, PASSWORD_DEFAULT)) {
             $connection->close();
-            return $result;
+            return PASSWORD_NULL;
         }
 
         $stmt->bind_param('ss', $user, $hash);
@@ -100,12 +111,12 @@ function register($user, $psw) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return false;
+            return REGISTRATION_FAILED;
         }
     }
 
     $connection->commit();
     $connection->close();
 
-    return $result;
+    return REGISTRATION_SUCCESS;
 }

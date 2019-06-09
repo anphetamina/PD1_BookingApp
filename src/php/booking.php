@@ -1,5 +1,7 @@
 <?php
-include 'db.php';
+include 'common.php';
+
+checkSession();
 
 if (!isset($_SESSION['seats'])) {
     $_SESSION['seats'] = 0;
@@ -10,7 +12,7 @@ if (!isset($_SESSION['seats'])) {
 
             switch ($action) {
                 case 'bookSeats':
-                    echo db_book_seats($user);
+                    ;
                     break;
                 case 'addSeat':
                     $_SESSION['seats']++;

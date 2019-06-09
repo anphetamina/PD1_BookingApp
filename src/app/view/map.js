@@ -19,7 +19,7 @@ class MapView {
         this.bought_seats.innerHTML = 'Posti acquistati: ';
 
         this.table = document.createElement('table');
-        this.parent = document.getElementById('map-div');
+        this.parent = document.getElementById("main-div");
 
         this.parent.appendChild(this.table);
         this.parent.appendChild(this.total_seats);

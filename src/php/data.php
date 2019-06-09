@@ -1,5 +1,5 @@
 <?php
-include 'db.php';
+include 'common.php';
 
 global $rows;
 global $columns;
@@ -30,11 +30,6 @@ if(!empty($_GET)) {
                     echo db_get_seat_state($id);
                 };
                 break;
-
-            case 'getAuth':
-
-                break;
-
 
             default:
                 break;
