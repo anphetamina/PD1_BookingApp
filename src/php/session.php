@@ -1,5 +1,13 @@
 <?php
 
+if (isset($_SESSION['authenticated'])) {
+    $authenticated = $_SESSION['authenticated'];
+} else $authenticated = false;
+
+if (isset($_SESSION['user'])) {
+    $user = $_SESSION['user'];
+} else $user = 'visitor';
+
 function startSession() {
     session_start();
     $_SESSION['authenticated'] = true;

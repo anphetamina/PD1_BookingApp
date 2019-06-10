@@ -15,8 +15,9 @@ class UserView {
         this.register_button.innerHTML = 'Registrazione';
     }
 
-    printLoginButton() {
+    printLoginButton(listener) {
         this.navigation_div.appendChild(this.login_button);
+        this.login_button.addEventListener('click', listener);
     }
 
     printRegisterButton() {
@@ -31,8 +32,18 @@ class UserView {
         $("#main-div").load('src/app/template/register_form.html');
     }
 
-    printLoginForm() {
-        $("#main-div").load('src/app/template/login_form.html');
+    printLoginForm(callback) {
+        $("#main-div").load('src/app/template/login_form.html', function () {
+            $("#login-form").submit(callback);
+        });
+    }
+
+    getLoginUsername() {
+        return document.getElementById('login-username').value;
+    }
+
+    getLoginPassword() {
+        return document.getElementById('login-password').value;
     }
 
 }

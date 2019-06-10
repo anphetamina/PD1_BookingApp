@@ -19,11 +19,11 @@ button, input {
     background-color: red;
 }
 
-.taken {
+.booked {
     background-color: orange;
 }
 
-.booked {
+.selected {
     background-color: yellow;
     color: black;
 }

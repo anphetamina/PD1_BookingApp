@@ -11,10 +11,18 @@ class UserController {
             if (authenticated) {
                 _this.view.printLogoutButton();
             } else {
-                _this.view.printLoginButton();
+                _this.view.printLoginButton(function () {
+                    _this.injectLoginForm(function () {
+                        _this.login(_this.view.getLoginUsername(), _this.view.getLoginPassword());
+                    });
+                });
                 _this.view.printRegisterButton();
             }
         });
+    }
+
+    injectLoginForm(callback) {
+        this.view.printLoginForm(callback);
     }
 
     login(username, password) {
@@ -22,7 +30,6 @@ class UserController {
         this.model.updateUserState(username, password, 'login', function (data) {
             console.log(data);
             _this.view.printLogoutButton();
-
         });
     }
 
