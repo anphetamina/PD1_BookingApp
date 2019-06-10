@@ -5,31 +5,22 @@ class MapView {
         this.booked_seats_count = 0;
         this.bought_seats_count = 0;
 
+    }
 
-        this.total_seats = document.createElement('p');
-        this.total_seats.innerHTML = 'Posti totali: ';
-
-        this.free_seats = document.createElement('p');
-        this.free_seats.innerHTML = 'Posti liberi: ';
-
-        this.booked_seats = document.createElement('p');
-        this.booked_seats.innerHTML = 'Posti prenotati: ';
-
-        this.bought_seats = document.createElement('p');
-        this.bought_seats.innerHTML = 'Posti acquistati: ';
-
-        this.table = document.createElement('table');
-        this.parent = document.getElementById("main-div");
-
-        this.parent.appendChild(this.table);
-        this.parent.appendChild(this.total_seats);
-        this.parent.appendChild(this.free_seats);
-        this.parent.appendChild(this.booked_seats);
-        this.parent.appendChild(this.bought_seats);
+    printButton() {
 
     }
 
-    printMap(data) {
+    printMap(data, listener) {
+        let _this = this;
+
+        $("#main-div").load('src/app/template/map.html', function () {
+            _this.printCells(data, listener);
+        });
+    }
+
+    printCells(data, listener) {
+        this.table = document.getElementById("map-table");
 
         console.log(data);
 
@@ -44,6 +35,7 @@ class MapView {
                 let cell = row.insertCell(j);
                 let id = (i+1).toString()+String.fromCharCode("A".charCodeAt(0)+j);
                 cell.innerHTML = id;
+                cell.addEventListener('click', listener);
                 let state = seats[index++].state;
 
                 switch (state) {
@@ -70,10 +62,10 @@ class MapView {
 
         this.total_seats_count = seats.length;
 
-        this.total_seats.append(this.total_seats_count);
-        this.free_seats.append(this.free_seats_count);
-        this.booked_seats.append(this.booked_seats_count);
-        this.bought_seats.append(this.bought_seats_count);
+        document.getElementById('total-seats-label').innerHTML = 'Posti totali: '+this.total_seats_count;
+        document.getElementById('free-seats-label').innerHTML = 'Posti liberi: '+this.free_seats_count;
+        document.getElementById('booked-seats-label').innerHTML = 'Posti prenotati: '+this.booked_seats_count;
+        document.getElementById('bought-seats-label').appendChild(document.createTextNode(this.bought_seats_count));
     }
 
     refreshCell(id, state) {
@@ -81,12 +73,10 @@ class MapView {
         cell.setAttribute('class', state);
     }
 
-    addSelectListener(listener) {
-        let cells = this.table.getElementsByTagName('td');
-        for (let i = 0; i < cells.length; i++) {
-            cells[i].addEventListener('click', listener);
-        }
+    refreshCounter() {
+
     }
+
 
     getSeatId(cell) {
         return cell.getAttribute('id');

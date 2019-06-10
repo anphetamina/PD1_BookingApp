@@ -46,7 +46,8 @@ class MapModel {
             success: function (result) {
                 let new_state = result;
                 callback(new_state);
-            }
+            },
+            error: undefined
         });
     }
 

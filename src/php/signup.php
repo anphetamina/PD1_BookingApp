@@ -11,7 +11,7 @@ if (!empty($_POST)) {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
 
-        if ($action == 'registration' && !$_SESSION['authenticated']) {
+        if ($action == 'register' && !$_SESSION['authenticated']) {
             if (isset($_POST['username']) && isset($_POST['password'])) {
                 $username = $_POST['username'];
                 $password = $_POST['password'];

@@ -11,18 +11,6 @@ function testCookie() {
     return (cookieEnabled);
 }
 
-function injectMap() {
-    map_controller.init();
-}
-
-function injectLoginForm() {
-    user_controller.init();
-}
-
-function injectRegistrationForm() {
-    $("#main-div").load('src/app/template/register_form.html');
-}
-
 let map_controller = undefined;
 let user_controller = undefined;
 
@@ -32,13 +20,11 @@ $(document).ready(function () {
         let map_model = new MapModel();
         let map_view = new MapView();
         map_controller = new MapController(map_model, map_view);
-
+        map_controller.init();
         let user_model = new UserModel();
         let user_view = new UserView();
         user_controller = new UserController(user_model, user_view);
-
-
-        injectMap();
+        user_controller.init();
 
     } else {
         // print msg no cookie

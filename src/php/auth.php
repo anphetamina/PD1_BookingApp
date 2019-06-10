@@ -5,6 +5,7 @@ define('LOGIN_SUCCESS', 71);
 define('LOGIN_FAILED', 90);
 define('LOGIN_ERROR', 23);
 
+
 if (!empty($_POST)) {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
@@ -38,7 +39,7 @@ if (!empty($_POST)) {
         }
 
         if ($action == 'logout' && $_SESSION['authenticated']) {
-            logout();
+            echo logout();
         }
     }
 }
@@ -73,6 +74,7 @@ function login($user, $psw) {
 }
 
 function logout() {
-    destroySession();
+    if(destroySession()) return true;
 
+    return false;
 }

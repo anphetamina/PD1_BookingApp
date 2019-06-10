@@ -12,7 +12,10 @@ function destroySession() {
         setcookie(session_name(), '', time() - 3600*24, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
         session_destroy();
         $_SESSION['authenticated'] = false;
+        return true;
     }
+
+    return false;
 }
 
 function checkSession() {
