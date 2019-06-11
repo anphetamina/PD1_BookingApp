@@ -6,6 +6,62 @@ global $authenticated;
 if ($authenticated) {
     redirect('index.php');
 }
+
+if (!empty($_POST)) {
+    if (isset($_POST['action'])) {
+        $action = $_POST['action'];
+
+        if ($action == 'login' && !$_SESSION['authenticated']) {
+            if (isset($_POST['username']) && isset($_POST['password'])) {
+                $username = $_POST['username'];
+                $password = $_POST['password'];
+
+                $response = login($username, $password);
+
+                redirect('login.php?msg=' . $response);
+
+
+            }
+        }
+
+        if ($action == 'logout' && $_SESSION['authenticated']) {
+            echo logout();
+        }
+    }
+}
+
+if (!empty($_GET)) {
+    if (isset($_GET['msg'])) {
+        $msg = $_GET['msg'];
+
+        switch ($msg) {
+            case LOGIN_SUCCESS:
+                startSession();
+                $msg = 'Login effettuato';
+                break;
+
+            case LOGIN_FAILED:
+                $msg = 'Password errata';
+                break;
+
+            case LOGIN_ERROR:
+                $msg = 'Login non riuscito';
+                break;
+
+            case LOGOUT_SUCCESS:
+                $msg = 'Logout riuscito';
+                break;
+
+            case LOGOUT_FAILED:
+                $msg = 'Logout non riuscito';
+                break;
+
+            default:
+                $msg = 'Messaggio non riconosciuto';
+                break;
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>

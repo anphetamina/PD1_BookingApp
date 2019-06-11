@@ -60,7 +60,7 @@ if (!empty($_GET)) {
                 break;
 
             default:
-                $msg = 'Risposta non riconosciuta';
+                $msg = 'Messaggio non riconosciuto';
                 break;
         }
     }
@@ -113,6 +113,10 @@ header
 <div id="navigation-div">
     <form action="index.php">
     <button id="map-button">Mappa</button>
+    </form>
+
+    <form action='login.php'>
+        <button id='login-button'>Login</button>
     </form>
 
 

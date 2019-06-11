@@ -1,48 +1,14 @@
 <?php
-include 'common.php';
+include "common.php";
+include "db.php";
 
 define('LOGIN_SUCCESS', 1111);
 define('LOGIN_FAILED', 121234);
 define('LOGIN_ERROR', 231);
+define('LOGOUT_SUCCESS', 78);
+define('LOGOUT_FAILED', 97);
 
-
-if (!empty($_POST)) {
-    if (isset($_POST['action'])) {
-        $action = $_POST['action'];
-
-        if ($action == 'login' && !$_SESSION['authenticated']) {
-            if (isset($_POST['username']) && isset($_POST['password'])) {
-                $username = $_POST['username'];
-                $password = $_POST['password'];
-
-                $response = login($username, $password);
-
-                switch ($response) {
-                    case LOGIN_SUCCESS:
-                        startSession();
-                        echo 'Login effettuato';
-                        break;
-
-                    case LOGIN_FAILED:
-                        echo 'Password errata';
-                        break;
-
-                    case LOGIN_ERROR:
-                        echo 'Login error';
-                        break;
-
-                    default:
-                        echo 'Azione proibita';
-                        break;
-                }
-            }
-        }
-
-        if ($action == 'logout' && $_SESSION['authenticated']) {
-            echo logout();
-        }
-    }
-}
+// todo sanitize
 
 function login($user, $psw) {
     $connection = db_get_connection();
@@ -74,7 +40,7 @@ function login($user, $psw) {
 }
 
 function logout() {
-    if(destroySession()) return true;
+    if(destroySession()) return LOGOUT_SUCCESS;
 
-    return false;
+    return LOGOUT_FAILED;
 }
