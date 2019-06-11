@@ -1,6 +1,7 @@
 <?php
-include "src/php/common.php";
+include_once "src/php/common.php";
 global $authenticated;
+global $user;
 ?>
 
 <!DOCTYPE html>
@@ -43,13 +44,15 @@ global $authenticated;
 
     <?php
     if ($authenticated) {
+        echo "<form id='book-form' action='#'>";
+        echo "<button id='book-button' type='submit'>Prenota posti</button>";
+        echo "</form>";
+
         echo "<form id='logout-form' action='src/php/auth.php'>";
         echo "<button id='logout-button' type='submit'>Logout</button>";
         echo "</form>";
 
-        echo "<form id='book-form' action='#'>";
-        echo "<button id='book-button' type='submit'>Prenota posti</button>";
-        echo "</form>";
+        echo "<p id='welcome-msg'>Bentornato ".$user."</p>";
     } else {
         echo "<form action='login.php'>";
         echo "<button id='login-button'>Login</button>";

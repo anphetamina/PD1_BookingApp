@@ -1,6 +1,6 @@
-<form id="login-form" action="src/php/auth.php">
-    <input id="login-username" type="email" name="username" placeholder="Inserisci la tua email"/>
-    <input id="login-password" type="password" name="password" placeholder="Password">
+<form id="login-form" action="login.php" method="POST">
+    <input id="login-username" type="email" name="username" placeholder="Inserisci la tua email" required/>
+    <input id="login-password" type="password" name="password" placeholder="Password" required>
     <br>
     <button id="login-submit" type="submit" name="action" value="login">Login</button>
     <button type="reset">Reset</button>

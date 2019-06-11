@@ -2,15 +2,19 @@
 include "common.php";
 include "db.php";
 
-define('LOGIN_SUCCESS', 1111);
-define('LOGIN_FAILED', 121234);
-define('LOGIN_ERROR', 231);
-define('LOGOUT_SUCCESS', 78);
-define('LOGOUT_FAILED', 97);
-
-// todo sanitize
+define('LOGIN_SUCCESS', 0);
+define('LOGIN_FAILED', -1);
+define('LOGIN_ERROR', -2);
+define('LOGOUT_SUCCESS', 1);
+define('LOGOUT_FAILED', -3);
+define('PASSWORD_NOT_VALID', -4);
+define('USERNAME_NOT_VALID', -5);
 
 function login($user, $psw) {
+
+    if (!checkPassword($psw)) return PASSWORD_NOT_VALID;
+    if (!checkEmail($user)) return USERNAME_NOT_VALID;
+
     $connection = db_get_connection();
     $result = false;
     $query = "select password from user where username=? for update";

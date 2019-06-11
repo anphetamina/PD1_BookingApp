@@ -1,5 +1,6 @@
 <?php
-include "src/php/common.php";
+
+include "src/php/auth.php";
 
 global $authenticated;
 
@@ -11,14 +12,39 @@ if (!empty($_POST)) {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
 
-        if ($action == 'login' && !$_SESSION['authenticated']) {
+        if ($action == 'login' && !$authenticated) {
             if (isset($_POST['username']) && isset($_POST['password'])) {
                 $username = $_POST['username'];
                 $password = $_POST['password'];
 
                 $response = login($username, $password);
 
-                redirect('login.php?msg=' . $response);
+                switch ($response) {
+                    case LOGIN_SUCCESS:
+                        startSession();
+                        $user = $username;
+                        break;
+
+                    case LOGIN_FAILED:
+                        redirect('login.php?msg=' . LOGIN_FAILED);
+                        break;
+
+                    case LOGIN_ERROR:
+                        redirect('login.php?msg=' . LOGIN_ERROR);
+                        break;
+
+                    case LOGOUT_SUCCESS:
+                        redirect('login.php?msg=' . LOGOUT_SUCCESS);
+                        break;
+
+                    case LOGOUT_FAILED:
+                        redirect('login.php?msg=' . LOGOUT_FAILED);
+                        break;
+
+                    default:
+                        // $msg = 'Messaggio non riconosciuto';
+                        break;
+                }
 
 
             }
@@ -36,7 +62,6 @@ if (!empty($_GET)) {
 
         switch ($msg) {
             case LOGIN_SUCCESS:
-                startSession();
                 $msg = 'Login effettuato';
                 break;
 
@@ -57,7 +82,7 @@ if (!empty($_GET)) {
                 break;
 
             default:
-                $msg = 'Messaggio non riconosciuto';
+                // $msg = 'Messaggio non riconosciuto';
                 break;
         }
     }
@@ -71,10 +96,6 @@ if (!empty($_GET)) {
     <title>s264014_BookingApp</title>
     <link rel="stylesheet" href="src/css/style.css"/>
     <script src="lib/jquery-3.4.1.min.js"></script>
-    <script src="lib/jquery-3.4.1.min.js"></script>
-    <script src="src/app/model/map.js"></script>
-    <script src="src/app/controller/map.js"></script>
-    <script src="src/app/view/map.js"></script>
     <script src="src/app/app.js"></script>
     <script type="text/javascript">
         $(function () {
@@ -96,6 +117,10 @@ if (!empty($_GET)) {
         <p>Per il corretto funzionamento del sito è necessario abilitare javascript</p>
     </noscript>
 
+</div>
+
+<div id="div-msg">
+    <p id="p-msg"><?php if (isset($msg)) echo $msg ?></p>
 </div>
 
 <div id="navigation-div">

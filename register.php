@@ -8,11 +8,6 @@ if ($authenticated) {
     redirect('index.php');
 }
 
-$_POST['username'] = '11@1.1';
-$_POST['password1'] = '1234';
-$_POST['password2'] = '1234';
-$_POST['action'] = 'register';
-
 if (!empty($_POST)) {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
@@ -22,7 +17,6 @@ if (!empty($_POST)) {
                 $username = $_POST['username'];
                 $password1 = $_POST['password1'];
                 $password2 = $_POST['password2'];
-
 
                 $response = register($username, $password1, $password2);
 
@@ -65,7 +59,7 @@ if (!empty($_GET)) {
                 break;
 
             default:
-                $msg = 'Messaggio non riconosciuto';
+                // $msg = 'Messaggio non riconosciuto';
                 break;
         }
     }
@@ -80,9 +74,6 @@ if (!empty($_GET)) {
     <title>s264014_BookingApp</title>
     <link rel="stylesheet" href="src/css/style.css"/>
     <script src="lib/jquery-3.4.1.min.js"></script>
-    <script src="src/app/unused/user_model.js"></script>
-    <script src="src/app/unused/user_controller.js"></script>
-    <script src="src/app/unused/user_view.js"></script>
     <script src="src/app/app.js"></script>
     <script type="text/javascript">
         $(function () {

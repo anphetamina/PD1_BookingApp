@@ -49,19 +49,21 @@ function loadMap() {
 
 function loadLoginForm() {
     if (testCookie()) {
-        $("#main-div").load("src/app/template/login_form.html");
-        $("#login-form").submit(function (event) {
-            let data = $("#register-form :input").serializeArray();
-            let username = data[0]['value'];
-            let password1 = data[1]['value'];
-            let password2 = data[2]['value'];
+        $("#main-div").load("src/app/template/login_form.html", function (event) {
+            $("#login-form").submit(function (event) {
+                let data = $("#login-form :input").serializeArray();
+                let username = data[0]['value'];
+                let password = data[1]['value'];
 
-            if(!sanitizeEmail(username) || !sanitizePassword(password1) || !sanitizePassword(password2) || password1!==password2) {
-                event.preventDefault();
-                document.getElementById("p-msg").innerHTML = 'Dati inseriti non validi';
-            }
+                if(!sanitizeEmail(username) || !sanitizePassword(password)) {
+                    event.preventDefault();
+                    document.getElementById("p-msg").innerHTML = 'Dati inseriti non validi';
+                }
+
+            });
 
         });
+
     } else {
         // todo
     }
