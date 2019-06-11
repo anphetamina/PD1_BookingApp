@@ -1,52 +1,14 @@
 <?php
-include 'common.php';
+include "common.php";
+include "db.php";
 
 define('REGISTRATION_SUCCESS', 1846);
 define('REGISTRATION_FAILED', -71);
 define('USERNAME_ALREADY_EXISTS', 1926);
 define('USERNAME_NOT_VALID', 90);
+define('PASSWORD_NOT_EQUAL', -13);
+define('PASSWORD_NOT_VALID', 71);
 define('PASSWORD_NULL', 17);
-
-if (!empty($_POST)) {
-    if (isset($_POST['action'])) {
-        $action = $_POST['action'];
-
-        if ($action == 'register' && !$_SESSION['authenticated']) {
-            if (isset($_POST['username']) && isset($_POST['password'])) {
-                $username = $_POST['username'];
-                $password = $_POST['password'];
-
-                $response = register($username, $password);
-
-                switch ($response) {
-                    case REGISTRATION_SUCCESS:
-                        echo 'Registrazione avvenuta con successo';
-                        break;
-
-                    case REGISTRATION_FAILED:
-                        echo 'Registrazione fallita';
-                        break;
-
-                    case USERNAME_ALREADY_EXISTS:
-                        echo 'Username già esistente';
-                        break;
-
-                    case USERNAME_NOT_VALID:
-                        echo 'Username non valido';
-                        break;
-
-                    case PASSWORD_NULL:
-                        echo 'Password non valida';
-                        break;
-
-                    default:
-                        echo 'Azione proibita';
-                        break;
-                }
-            }
-        }
-    }
-}
 
 // todo sanitize
 
@@ -84,7 +46,18 @@ function checkEmail($username) {
     return filter_var($username, FILTER_VALIDATE_EMAIL) && htmlentities($username)==$username;
 }
 
-function register($user, $psw) {
+function checkPassword($psw) {
+    $pattern = '/[a-zA-Z0-9_]+/';
+    if (preg_match($pattern, $psw)) {
+        return strlen($psw)>=2 && strlen($psw)<=100;
+    }
+
+    return false;
+}
+
+function register($user, $psw1, $psw2) {
+    if ($psw1!=$psw2) return PASSWORD_NOT_EQUAL;
+    if (!checkPassword($psw1)) return PASSWORD_NOT_VALID;
     if (checkUser($user)) return USERNAME_ALREADY_EXISTS;
     if (!checkEmail($user)) return USERNAME_NOT_VALID;
 
@@ -93,7 +66,7 @@ function register($user, $psw) {
     $query = "insert into user (username, password) values (?, ?)";
     if($stmt = $connection->prepare($query)) {
 
-        if (!$hash = password_hash($psw, PASSWORD_DEFAULT)) {
+        if (!$hash = password_hash($psw1, PASSWORD_DEFAULT)) {
             $connection->close();
             return PASSWORD_NULL;
         }

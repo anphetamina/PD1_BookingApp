@@ -7,6 +7,7 @@ define('HOST', '127.0.0.1');
 define('USER', 'root');
 define('PASS', '');
 define('DB', 'booking_app');
+define('DB_OK', 10);
 
 
 function db_get_connection() {

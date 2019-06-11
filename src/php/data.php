@@ -1,5 +1,6 @@
 <?php
 include 'common.php';
+include 'db.php';
 
 global $rows;
 global $columns;

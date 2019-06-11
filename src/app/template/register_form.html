@@ -1,8 +1,8 @@
-<form action="">
-    <input type="email" placeholder="Inserisci la tua email"/>
-    <input type="password" placeholder="Password">
-    <input type="password" placeholder="Conferma password">
+<form action="register.php" method="POST">
+    <input id="register-username" type="email" name="username" placeholder="Inserisci la tua email" required/>
+    <input id="register-password1" type="password" name="password1" placeholder="Password" required>
+    <input id="register-password2" type="password" name="password2" placeholder="Conferma password" required>
     <br>
-    <button id="register-submit" type="submit">Registrati</button>
+    <button id="register-submit" type="submit" name="action" value="register">Registrati</button>
     <button type="reset">Reset</button>
 </form>

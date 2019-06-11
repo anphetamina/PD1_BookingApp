@@ -1,9 +1,9 @@
 <?php
 include 'common.php';
 
-define('LOGIN_SUCCESS', 71);
-define('LOGIN_FAILED', 90);
-define('LOGIN_ERROR', 23);
+define('LOGIN_SUCCESS', 1111);
+define('LOGIN_FAILED', 121234);
+define('LOGIN_ERROR', 231);
 
 
 if (!empty($_POST)) {

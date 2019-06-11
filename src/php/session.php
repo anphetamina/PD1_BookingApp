@@ -27,9 +27,9 @@ function destroySession() {
 }
 
 function checkSession() {
-    if (isset($_SESSION['authenticated'])) {
+    if (isset($authenticated) && $authenticated) {
         checkTime();
-    } else 'Not allowed';
+    }
 }
 
 function checkTime() {
@@ -37,6 +37,7 @@ function checkTime() {
 
     if($diff > 2*60) { // minutes
         logout();
+        redirect('index.php'); // todo timeout msg
     }
 
     $_SESSION['time'] = time();
