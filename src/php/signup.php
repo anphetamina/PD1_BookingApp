@@ -2,13 +2,13 @@
 include "common.php";
 include "db.php";
 
-define('REGISTRATION_SUCCESS', 1846);
-define('REGISTRATION_FAILED', -71);
-define('USERNAME_ALREADY_EXISTS', 1926);
-define('USERNAME_NOT_VALID', 90);
-define('PASSWORD_NOT_EQUAL', -13);
-define('PASSWORD_NOT_VALID', 71);
-define('PASSWORD_NULL', 17);
+define('REGISTRATION_SUCCESS', 0);
+define('REGISTRATION_FAILED', -1);
+define('USERNAME_ALREADY_EXISTS', -2);
+define('USERNAME_NOT_VALID', -3);
+define('PASSWORD_NOT_EQUAL', -4);
+define('PASSWORD_NOT_VALID', -5);
+define('PASSWORD_NULL', -6);
 
 // todo sanitize
 

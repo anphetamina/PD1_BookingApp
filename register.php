@@ -106,8 +106,8 @@ header
 
 </div>
 
-<div class="msg">
-    <p><?php if (isset($msg)) echo $msg ?></p>
+<div id="div-msg">
+    <p id="p-msg"><?php if (isset($msg)) echo $msg ?></p>
 </div>
 
 <div id="navigation-div">

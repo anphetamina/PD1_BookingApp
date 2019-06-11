@@ -9,6 +9,32 @@ function testCookie() {
     return cookieEnabled;
 }
 
+function sanitizeEmail(email) {
+    if(email === null || email === undefined || email === "") return false;
+    let pattern = /[a-zA-Z]+[a-zA-Z0-9_]*\@[a-zA-Z]+[a-zA-Z0-9]*\.[a-z]+/;
+
+    let result = email.match(pattern);
+    if (result === null) return false;
+
+    let matched_string = result[0];
+    if (email !== matched_string) return false;
+
+    return true;
+}
+
+function sanitizePassword(password) {
+    if(password === null || password === undefined || password === "") return false;
+    let pattern = /[^\`\¬\`\¦\!\"\£\$\%\^\&\*\(\)\_\-\+\=\[\]\{\}\:\;\@\'\#\~\?\/\.\>\<\,\\\|\€]+/;
+
+    let result = password.match(pattern);
+    if (result === null) return false;
+
+    let matched_string = result[0];
+    if (password !== matched_string) return false;
+
+    return true;
+}
+
 function loadMap() {
     if (testCookie()) {
         let map_model = new MapModel();
@@ -32,7 +58,21 @@ function loadLoginForm() {
 
 function loadRegisterForm() {
     if (testCookie()) {
-        $("#main-div").load("src/app/template/register_form.html");
+        $("#main-div").load("src/app/template/register_form.html", function () {
+            $("#register-form").submit(function (event) {
+                let data = $("#register-form :input").serializeArray();
+                let username = data[0]['value'];
+                let password1 = data[1]['value'];
+                let password2 = data[2]['value'];
+
+                if(!sanitizeEmail(username) || !sanitizePassword(password1) || !sanitizePassword(password2) || password1!==password2) {
+                    event.preventDefault();
+                    document.getElementById("p-msg").innerHTML = 'Dati inseriti non validi';
+                }
+
+            });
+
+        });
     } else {
         // todo
     }
