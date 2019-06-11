@@ -1,35 +1,17 @@
 <?php
 
-if (isset($_SESSION['authenticated'])) {
-    $authenticated = $_SESSION['authenticated'];
-} else $authenticated = false;
-
-if (isset($_SESSION['user'])) {
-    $user = $_SESSION['user'];
-} else $user = 'visitor';
-
-function startSession() {
-    session_start();
-    $_SESSION['authenticated'] = true;
-    $_SESSION['time'] = time();
-}
-
 function destroySession() {
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
         setcookie(session_name(), '', time() - 3600*24, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
         session_destroy();
         $_SESSION['authenticated'] = false;
+        $_SESSION['user'] = 'visitor';
+        $_SESSION['timeout'] = true;
         return true;
     }
 
     return false;
-}
-
-function checkSession() {
-    if (isset($authenticated) && $authenticated) {
-        checkTime();
-    }
 }
 
 function checkTime() {
@@ -37,7 +19,7 @@ function checkTime() {
 
     if($diff > 2*60) { // minutes
         logout();
-        redirect('index.php'); // todo timeout msg
+        redirect('index.php?msg=-1');
     }
 
     $_SESSION['time'] = time();

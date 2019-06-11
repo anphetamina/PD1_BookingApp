@@ -3,19 +3,16 @@
 $rows = 10;
 $columns = 6;
 
-include "session.php";
+if (isset($_SESSION['authenticated'])) {
+    $authenticated = $_SESSION['authenticated'];
+} else $authenticated = false;
 
+if (isset($_SESSION['user'])) {
+    $user = $_SESSION['user'];
+} else $user = 'visitor';
 
-function checkEmail($username) {
-    return filter_var($username, FILTER_VALIDATE_EMAIL) && htmlentities($username)==$username;
-}
+if (isset($_SESSION['timeout'])) {
+    $timeout = $_SESSION['timeout'];
+} else $timeout = false;
 
-function checkPassword($psw) {
-    $pattern = '/^([a-z]+[A-Z0-9]+|[A-Z0-9]+[a-z]+){0,50}$/';
-    if (preg_match($pattern, $psw)) {
-        return strlen($psw)>=2 && strlen($psw)<=100;
-    }
-
-    return false;
-}
 

@@ -2,7 +2,6 @@
 
 include "src/php/signup.php";
 
-global $authenticated;
 
 if ($authenticated) {
     redirect('index.php');
@@ -22,45 +21,6 @@ if (!empty($_POST)) {
 
                 redirect('register.php?msg=' . $response);
             }
-        }
-    }
-}
-
-if (!empty($_GET)) {
-    if (isset($_GET['msg'])) {
-        $msg = $_GET['msg'];
-        switch ($msg) {
-            case REGISTRATION_SUCCESS:
-                $msg = 'Registrazione avvenuta con successo';
-                break;
-
-            case REGISTRATION_FAILED:
-                $msg = 'Registrazione fallita';
-                break;
-
-            case USERNAME_ALREADY_EXISTS:
-                $msg = 'Username già esistente';
-                break;
-
-            case USERNAME_NOT_VALID:
-                $msg = 'Username non valido';
-                break;
-
-            case PASSWORD_NOT_VALID:
-                $msg = 'Password non valida';
-                break;
-
-            case PASSWORD_NOT_EQUAL:
-                $msg = 'Le password non coincidono';
-                break;
-
-            case PASSWORD_NULL:
-                $msg = 'Password sbagliata';
-                break;
-
-            default:
-                // $msg = 'Messaggio non riconosciuto';
-                break;
         }
     }
 }
@@ -103,7 +63,50 @@ header
 </div>
 
 <div id="div-msg">
-    <p id="p-msg"><?php if (isset($msg)) echo $msg ?></p>
+    <p id="p-msg">
+        <?php
+
+        if (!empty($_GET)) {
+            if (isset($_GET['msg'])) {
+                $msg = $_GET['msg'];
+                switch ($msg) {
+                    case REGISTRATION_SUCCESS:
+                        $msg = 'Registrazione avvenuta con successo';
+                        break;
+
+                    case REGISTRATION_FAILED:
+                        $msg = 'Registrazione fallita';
+                        break;
+
+                    case USERNAME_ALREADY_EXISTS:
+                        $msg = 'Username già esistente';
+                        break;
+
+                    case USERNAME_NOT_VALID:
+                        $msg = 'Username non valido';
+                        break;
+
+                    case PASSWORD_NOT_VALID:
+                        $msg = 'Password non valida';
+                        break;
+
+                    case PASSWORD_NOT_EQUAL:
+                        $msg = 'Le password non coincidono';
+                        break;
+
+                    case PASSWORD_NULL:
+                        $msg = 'Password sbagliata';
+                        break;
+
+                    default:
+                        // $msg = 'Messaggio non riconosciuto';
+                        break;
+                }
+            }
+        }
+
+        ?>
+    </p>
 </div>
 
 <div id="navigation-div">

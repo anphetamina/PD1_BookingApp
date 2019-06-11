@@ -2,7 +2,6 @@
 
 include "src/php/auth.php";
 
-global $authenticated;
 
 if ($authenticated) {
     redirect('index.php');
@@ -21,8 +20,10 @@ if (!empty($_POST)) {
 
                 switch ($response) {
                     case LOGIN_SUCCESS:
-                        startSession();
+                        $_SESSION['authenticated'] = true;
                         $_SESSION['user'] = $username;
+                        $_SESSION['time'] = time();
+                        redirect('index.php');
                         break;
 
                     case LOGIN_FAILED:
@@ -47,10 +48,12 @@ if (!empty($_POST)) {
 
             switch ($response) {
                 case LOGOUT_SUCCESS:
+                    $timeout = false;
                     redirect('login.php?msg=' . LOGOUT_SUCCESS);
                     break;
 
                 case LOGOUT_FAILED:
+                    $timeout = true;
                     redirect('login.php?msg=' . LOGOUT_FAILED);
                     break;
 
@@ -61,37 +64,7 @@ if (!empty($_POST)) {
     }
 }
 
-if (!empty($_GET)) {
-    if (isset($_GET['msg'])) {
-        $msg = $_GET['msg'];
 
-        switch ($msg) {
-            case LOGIN_SUCCESS:
-                $msg = 'Login effettuato';
-                break;
-
-            case LOGIN_FAILED:
-                $msg = 'Password errata';
-                break;
-
-            case LOGIN_ERROR:
-                $msg = 'Login non riuscito';
-                break;
-
-            case LOGOUT_SUCCESS:
-                $msg = 'Logout riuscito';
-                break;
-
-            case LOGOUT_FAILED:
-                $msg = 'Logout non riuscito';
-                break;
-
-            default:
-                // $msg = 'Messaggio non riconosciuto';
-                break;
-        }
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -125,7 +98,43 @@ if (!empty($_GET)) {
 </div>
 
 <div id="div-msg">
-    <p id="p-msg"><?php if (isset($msg)) echo $msg ?></p>
+    <p id="p-msg">
+        <?php
+
+        if (!empty($_GET)) {
+            if (isset($_GET['msg'])) {
+                $msg = $_GET['msg'];
+
+                switch ($msg) {
+                    case LOGIN_SUCCESS:
+                        $msg = 'Login effettuato';
+                        break;
+
+                    case LOGIN_FAILED:
+                        $msg = 'Password errata';
+                        break;
+
+                    case LOGIN_ERROR:
+                        $msg = 'Login non riuscito';
+                        break;
+
+                    case LOGOUT_SUCCESS:
+                        $msg = 'Logout riuscito';
+                        break;
+
+                    case LOGOUT_FAILED:
+                        $msg = 'Logout non riuscito';
+                        break;
+
+                    default:
+                        // $msg = 'Messaggio non riconosciuto';
+                        break;
+                }
+            }
+        }
+
+        ?>
+    </p>
 </div>
 
 <div id="navigation-div">

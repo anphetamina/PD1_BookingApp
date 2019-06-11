@@ -1,5 +1,5 @@
 <?php
-include_once "common.php";
+include "common.php";
 include "db.php";
 
 global $rows;
@@ -32,15 +32,6 @@ if(!empty($_GET)) {
                 };
                 break;
 
-            case 'getUser':
-                if (isset($_SESSION['authenticated']) && isset($_SESSION['user']) && $_SESSION['authenticated']) {
-                    $user = array($_SESSION['authenticated'], $_SESSION['user']);
-                    echo json_encode($user); // logged in
-                } else {
-                    $user = array(null, false);
-                    echo json_encode($user);
-                }
-                break;
 
             default:
                 break;

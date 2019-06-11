@@ -43,7 +43,7 @@ function loadMap() {
         map_controller.init();
 
     } else {
-        // todo print msg no cookie
+        document.getElementById("p-msg").innerHTML = 'Per visualizzare la mappa dei posti occorre abilitare i cookie';
     }
 }
 
@@ -68,7 +68,7 @@ function loadLoginForm() {
         });
 
     } else {
-        // todo
+        document.getElementById("p-msg").innerHTML = 'Per effettuare il login occorre abilitare i cookie';
     }
 
 }
@@ -82,15 +82,22 @@ function loadRegisterForm() {
                 let password1 = data[1]['value'];
                 let password2 = data[2]['value'];
 
-                if(!sanitizeEmail(username) || !sanitizePassword(password1) || !sanitizePassword(password2) || password1!==password2) {
+                if(!sanitizeEmail(username)) {
                     event.preventDefault();
-                    document.getElementById("p-msg").innerHTML = 'Dati inseriti non validi';
+                    document.getElementById("p-msg").innerHTML = 'Email inserita non valida';
+                } else if (!sanitizePassword(password1) || !sanitizePassword(password2)) {
+                    event.preventDefault();
+                    document.getElementById("p-msg").innerHTML = 'Password inserita non valida';
+                } else if (password1 !== password2) {
+                    event.preventDefault();
+                    document.getElementById("p-msg").innerHTML = 'Le password non coincidono';
                 }
+
 
             });
 
         });
     } else {
-        // todo
+        document.getElementById("p-msg").innerHTML = 'Per effettuare una registrazione occorre abilitare i cookie';
     }
 }

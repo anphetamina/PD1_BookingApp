@@ -1,7 +1,11 @@
 <?php
-include_once "src/php/common.php";
+include "src/php/common.php";
+
 global $authenticated;
 global $user;
+global $timeout;
+
+define('TIMEOUT', -1);
 ?>
 
 <!DOCTYPE html>
@@ -35,6 +39,19 @@ global $user;
         <p>Per il corretto funzionamento del sito è necessario abilitare javascript</p>
     </noscript>
 
+</div>
+
+<div id="div-msg">
+    <p id="p-msg">
+        <?php
+        if (!empty($_GET)) {
+            if (isset($_GET['msg']) && isset($timeout)) {
+                if ($_GET['msg'] == -1 && $timeout)
+                    echo 'Sessione scaduta';
+            }
+        }
+        ?>
+    </p>
 </div>
 
 <div id="navigation-div">

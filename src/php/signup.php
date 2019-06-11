@@ -1,5 +1,5 @@
 <?php
-include "common.php";
+
 include "db.php";
 
 define('REGISTRATION_SUCCESS', 0);
@@ -10,8 +10,6 @@ define('PASSWORD_NOT_EQUAL', -4);
 define('PASSWORD_NOT_VALID', -5);
 define('PASSWORD_NULL', -6);
 define('INPUT_NOT_VALID', -7);
-
-// todo sanitize
 
 function checkUser($username) {
     $connection = db_get_connection();
@@ -42,8 +40,6 @@ function checkUser($username) {
 
     return $result;
 }
-
-
 
 function register($user, $psw1, $psw2) {
     if ($psw1!=$psw2) return PASSWORD_NOT_EQUAL;
@@ -82,4 +78,17 @@ function register($user, $psw1, $psw2) {
     $connection->close();
 
     return REGISTRATION_SUCCESS;
+}
+
+function checkEmail($username) {
+    return filter_var($username, FILTER_VALIDATE_EMAIL) && htmlentities($username)==$username;
+}
+
+function checkPassword($psw) {
+    $pattern = '/^([a-z]+[A-Z0-9]+|[A-Z0-9]+[a-z]+){0,50}$/';
+    if (preg_match($pattern, $psw)) {
+        return strlen($psw)>=2 && strlen($psw)<=100;
+    }
+
+    return false;
 }
