@@ -11,7 +11,7 @@ function testCookie() {
 
 function sanitizeEmail(email) {
     if(email === null || email === undefined || email === "") return false;
-    let pattern = /[a-zA-Z]+[a-zA-Z0-9_]*\@[a-zA-Z]+[a-zA-Z0-9]*\.[a-z]+/;
+    let pattern = /^[a-zA-Z][a-zA-Z0-9_]{0,49}\@[a-zA-Z][a-zA-Z0-9]{0,49}\.[a-z]{1,20}$/;
 
     let result = email.match(pattern);
     if (result === null) return false;
@@ -24,7 +24,7 @@ function sanitizeEmail(email) {
 
 function sanitizePassword(password) {
     if(password === null || password === undefined || password === "") return false;
-    let pattern = /[^\`\¬\`\¦\!\"\£\$\%\^\&\*\(\)\_\-\+\=\[\]\{\}\:\;\@\'\#\~\?\/\.\>\<\,\\\|\€]+/;
+    let pattern = /^[^\`\¬\`\¦\!\"\£\$\%\^\&\*\(\)\_\-\+\=\[\]\{\}\:\;\@\'\#\~\?\/\.\>\<\,\\\|\€\n\r\t]{1,100}$/;
 
     let result = password.match(pattern);
     if (result === null) return false;
@@ -50,6 +50,18 @@ function loadMap() {
 function loadLoginForm() {
     if (testCookie()) {
         $("#main-div").load("src/app/template/login_form.html");
+        $("#login-form").submit(function (event) {
+            let data = $("#register-form :input").serializeArray();
+            let username = data[0]['value'];
+            let password1 = data[1]['value'];
+            let password2 = data[2]['value'];
+
+            if(!sanitizeEmail(username) || !sanitizePassword(password1) || !sanitizePassword(password2) || password1!==password2) {
+                event.preventDefault();
+                document.getElementById("p-msg").innerHTML = 'Dati inseriti non validi';
+            }
+
+        });
     } else {
         // todo
     }
