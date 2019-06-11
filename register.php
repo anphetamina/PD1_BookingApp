@@ -8,11 +8,16 @@ if ($authenticated) {
     redirect('index.php');
 }
 
+$_POST['username'] = '11@1.1';
+$_POST['password1'] = '1234';
+$_POST['password2'] = '1234';
+$_POST['action'] = 'register';
+
 if (!empty($_POST)) {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
 
-        if ($action == 'register' && !$authenticated) {
+        if ($action === 'register' && !$authenticated) {
             if (isset($_POST['username']) && isset($_POST['password1']) && isset($_POST['password2'])) {
                 $username = $_POST['username'];
                 $password1 = $_POST['password1'];

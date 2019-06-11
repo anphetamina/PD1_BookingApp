@@ -9,6 +9,7 @@ define('USERNAME_NOT_VALID', -3);
 define('PASSWORD_NOT_EQUAL', -4);
 define('PASSWORD_NOT_VALID', -5);
 define('PASSWORD_NULL', -6);
+define('INPUT_NOT_VALID', -7);
 
 // todo sanitize
 
@@ -47,7 +48,7 @@ function checkEmail($username) {
 }
 
 function checkPassword($psw) {
-    $pattern = '/[a-zA-Z0-9_]+/';
+    $pattern = '/^[^\`\¬\`\¦\!\"\£\$\%\^\&\*\(\)\_\-\+\=\[\]\{\}\:\;\@\\\'\#\~\?\/\.\>\<\,\\\|\€\n\r\t]{1,100}$/';
     if (preg_match($pattern, $psw)) {
         return strlen($psw)>=2 && strlen($psw)<=100;
     }
