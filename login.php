@@ -22,7 +22,7 @@ if (!empty($_POST)) {
                 switch ($response) {
                     case LOGIN_SUCCESS:
                         startSession();
-                        $user = $username;
+                        $_SESSION['user'] = $username;
                         break;
 
                     case LOGIN_FAILED:
@@ -31,14 +31,6 @@ if (!empty($_POST)) {
 
                     case LOGIN_ERROR:
                         redirect('login.php?msg=' . LOGIN_ERROR);
-                        break;
-
-                    case LOGOUT_SUCCESS:
-                        redirect('login.php?msg=' . LOGOUT_SUCCESS);
-                        break;
-
-                    case LOGOUT_FAILED:
-                        redirect('login.php?msg=' . LOGOUT_FAILED);
                         break;
 
                     default:
@@ -50,8 +42,21 @@ if (!empty($_POST)) {
             }
         }
 
-        if ($action == 'logout' && $_SESSION['authenticated']) {
-            echo logout();
+        if ($action == 'logout' && $authenticated) {
+            $response = logout();
+
+            switch ($response) {
+                case LOGOUT_SUCCESS:
+                    redirect('login.php?msg=' . LOGOUT_SUCCESS);
+                    break;
+
+                case LOGOUT_FAILED:
+                    redirect('login.php?msg=' . LOGOUT_FAILED);
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }

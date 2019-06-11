@@ -24,7 +24,7 @@ function sanitizeEmail(email) {
 
 function sanitizePassword(password) {
     if(password === null || password === undefined || password === "") return false;
-    let pattern = /^[^\`\¬\`\¦\!\"\£\$\%\^\&\*\(\)\_\-\+\=\[\]\{\}\:\;\@\'\#\~\?\/\.\>\<\,\\\|\€\n\r\t]{1,100}$/;
+    let pattern = /^([a-z]+[A-Z0-9]+|[A-Z0-9]+[a-z]+){0,50}$/;
 
     let result = password.match(pattern);
     if (result === null) return false;
@@ -55,9 +55,12 @@ function loadLoginForm() {
                 let username = data[0]['value'];
                 let password = data[1]['value'];
 
-                if(!sanitizeEmail(username) || !sanitizePassword(password)) {
+                if(!sanitizeEmail(username)) {
                     event.preventDefault();
-                    document.getElementById("p-msg").innerHTML = 'Dati inseriti non validi';
+                    document.getElementById("p-msg").innerHTML = 'Email inserita non valida';
+                } else if (!sanitizePassword(password)) {
+                    event.preventDefault();
+                    document.getElementById("p-msg").innerHTML = 'Password inserita non valida';
                 }
 
             });

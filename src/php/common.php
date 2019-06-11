@@ -11,7 +11,7 @@ function checkEmail($username) {
 }
 
 function checkPassword($psw) {
-    $pattern = '/^[^\`\¬\`\¦\!\"\£\$\%\^\&\*\(\)\_\-\+\=\[\]\{\}\:\;\@\\\'\#\~\?\/\.\>\<\,\\\|\€\n\r\t]{1,100}$/';
+    $pattern = '/^([a-z]+[A-Z0-9]+|[A-Z0-9]+[a-z]+){0,50}$/';
     if (preg_match($pattern, $psw)) {
         return strlen($psw)>=2 && strlen($psw)<=100;
     }
