@@ -2,10 +2,11 @@
 session_start();
 
 include "src/php/auth.php";
+include "src/php/common.php";
 
-/*$_POST['action'] = 'login';
-$_POST['username'] = 'u1@p.it';
-$_POST['password'] = 'aAa';*/
+if (isset($_SESSION['user'])) {
+    redirect('index.php');
+}
 
 
 

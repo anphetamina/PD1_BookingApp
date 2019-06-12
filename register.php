@@ -2,6 +2,11 @@
 session_start();
 
 include "src/php/signup.php";
+include "src/php/common.php";
+
+if (isset($_SESSION['user'])) {
+    redirect('index.php');
+}
 
 if (!empty($_POST)) {
     if (isset($_POST['action'])) {
