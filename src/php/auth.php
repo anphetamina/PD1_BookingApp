@@ -45,9 +45,9 @@ function login($user, $psw) {
 }
 
 function logout() {
-    if(destroySession()) return LOGOUT_SUCCESS;
-
-    return LOGOUT_FAILED;
+    if(destroySession()){
+        return LOGOUT_SUCCESS;
+    } else return LOGOUT_FAILED;
 }
 
 function checkEmail($username) {

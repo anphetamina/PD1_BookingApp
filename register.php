@@ -8,6 +8,8 @@ if (isset($_SESSION['user'])) {
     redirect('index.php');
 }
 
+httpsRedirect();
+
 if (!empty($_POST)) {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];

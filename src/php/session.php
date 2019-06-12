@@ -1,10 +1,21 @@
 <?php
 
+if (isset($_SESSION['count']) && !isset($count)) {
+    $count = $_SESSION['count']++;
+} else $count = $_SESSION['count'] = 0;
+
+define('TIMEOUT', 'timeOut');
+define('TIMEOUT_ERROR', 'timeOutError');
+
+function testCookie() {
+
+}
+
 function destroySession() {
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
         setcookie(session_name(), '', time() - 3600*24, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
-        // $_SESSION = array();
+        $_SESSION = array();
         session_destroy();
         return true;
     }
@@ -17,14 +28,17 @@ function checkTime() {
         $diff = time() - $_SESSION['time'];
 
         if($diff > 2*60) { // minutes
-            $_SESSION['timeout'] = true;
-            if(destroySession()) redirect('index.php?msg=timeOut');
-            else echo 'Timeout error';
+
+            if(destroySession()) {
+                return true;
+            }
+            else return false;
         }
 
         $_SESSION['time'] = time();
     }
 
+    return false;
 }
 
 function redirect($page) {
@@ -32,12 +46,10 @@ function redirect($page) {
     exit();
 }
 
-function httpsRedirect() {
-    if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
-        print 'Https request already made';
-    } else {
-        $redirect = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        header('Location: ' . $redirect);
+function httpsRedirect(){
+    if(!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS']==='off'){
+        $page = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        header("Location: ". $page);
         exit();
     }
 }
