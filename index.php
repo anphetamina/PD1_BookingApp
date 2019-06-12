@@ -15,10 +15,12 @@ if (!empty($_POST)) {
 
             switch ($response) {
                 case LOGOUT_SUCCESS:
+                    $_SESSION['response'] = $response;
                     redirect('index.php?msg=' . LOGOUT_SUCCESS); // session already destroyed
                     break;
 
                 case LOGOUT_FAILED:
+                    $_SESSION['response'] = $response;
                     redirect('index.php?msg=' . LOGOUT_FAILED);
                     break;
 
@@ -86,11 +88,17 @@ define('TIMEOUT', 'timeOut');
                         break;
 
                     case LOGOUT_SUCCESS:
-                        if($response === LOGOUT_SUCCESS) echo 'Logout riuscito';
+                        if (isset($_SESSION['response'])) {
+                            if($_SESSION['response'] === LOGOUT_SUCCESS) echo 'Logout riuscito';
+
+                        }
                         break;
 
                     case LOGOUT_FAILED:
-                        if($response === LOGOUT_FAILED) echo 'Logout non riuscito';
+                        if (isset($_SESSION['response'])) {
+                            if($_SESSION['response'] === LOGOUT_FAILED) echo 'Logout non riuscito';
+
+                        }
                         break;
 
                     default:

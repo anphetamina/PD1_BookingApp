@@ -2,14 +2,14 @@
 include "common.php";
 include "db.php";
 
-define('LOGIN_SUCCESS', 0);
-define('LOGIN_FAILED', -1);
-define('LOGIN_ERROR', -2);
+define('LOGIN_SUCCESS', 'loginSuccess');
+define('LOGIN_FAILED', 'loginFailed');
+define('LOGIN_ERROR', 'loginError');
 define('LOGOUT_SUCCESS', 'logoutSuccess');
 define('LOGOUT_ERROR', 'logoutError');
 define('LOGOUT_FAILED', 'logoutFailed');
-define('PASSWORD_NOT_VALID', -4);
-define('USERNAME_NOT_VALID', -5);
+define('PASSWORD_NOT_VALID', 'passwordNotValid');
+define('USERNAME_NOT_VALID', 'usernameNotValid');
 
 function login($user, $psw) {
 

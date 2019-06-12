@@ -3,6 +3,11 @@ session_start();
 
 include "src/php/auth.php";
 
+/*$_POST['action'] = 'login';
+$_POST['username'] = 'u1@p.it';
+$_POST['password'] = 'aAa';*/
+
+
 
 if (!empty($_POST)) {
     if (isset($_POST['action'])) {
@@ -20,14 +25,17 @@ if (!empty($_POST)) {
                         $_SESSION['user'] = $username;
                         $_SESSION['time'] = time();
                         $_SESSION['timeout'] = false;
+                        $_SESSION['response'] = $response;
                         redirect('index.php');
                         break;
 
                     case LOGIN_FAILED:
+                        $_SESSION['response'] = $response;
                         redirect('login.php?msg=' . LOGIN_FAILED);
                         break;
 
                     case LOGIN_ERROR:
+                        $_SESSION['response'] = $response;
                         redirect('login.php?msg=' . LOGIN_ERROR);
                         break;
 
@@ -82,20 +90,20 @@ if (!empty($_POST)) {
         <?php
 
         if (!empty($_GET)) {
-            if (isset($_GET['msg']) && isset($response)) {
+            if (isset($_GET['msg']) && isset($_SESSION['response'])) {
                 $msg = $_GET['msg'];
 
                 switch ($msg) {
                     case LOGIN_SUCCESS:
-                        if($response === LOGOUT_SUCCESS) echo 'Login effettuato';
+                        if($_SESSION['response'] === LOGOUT_SUCCESS) echo 'Login effettuato';
                         break;
 
                     case LOGIN_FAILED:
-                        if($response === LOGIN_FAILED) echo 'Password errata';
+                        if($_SESSION['response'] === LOGIN_FAILED) echo 'Password errata';
                         break;
 
                     case LOGIN_ERROR:
-                        if($response === LOGIN_ERROR) echo 'Login non riuscito';
+                        if($_SESSION['response'] === LOGIN_ERROR) echo 'Login non riuscito';
                         break;
 
                     default:
