@@ -82,7 +82,7 @@ if (!empty($_POST)) {
         <?php
 
         if (!empty($_GET)) {
-            if (isset($_GET['msg']) && isset($_SESSION['user']) && isset($response)) {
+            if (isset($_GET['msg']) && isset($response)) {
                 $msg = $_GET['msg'];
 
                 switch ($msg) {

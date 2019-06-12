@@ -11,7 +11,7 @@ function testCookie() {
 
 function sanitizeEmail(email) {
     if(email === null || email === undefined || email === "") return false;
-    let pattern = /^[a-zA-Z][a-zA-Z0-9_]{1,49}\@[a-zA-Z][a-zA-Z0-9]{1,49}\.[a-z]{1,20}$/;
+    let pattern = /^[a-zA-Z]{1,20}[a-zA-Z0-9_\.\-]{0,20}\@[a-zA-Z0-9]{1,10}[a-zA-Z0-9]{0,10}\.[a-zA-Z]{2,6}$/;
 
     let result = email.match(pattern);
     if (result === null) return false;
@@ -24,7 +24,8 @@ function sanitizeEmail(email) {
 
 function sanitizePassword(password) {
     if(password === null || password === undefined || password === "") return false;
-    let pattern = /^([a-z]+[A-Z0-9]+|[A-Z0-9]+[a-z]+){1,50}$/;
+    if(password.length < 2 || password.length > 100) return false;
+    let pattern = /^[a-z]+[A-Z0-9]+[a-zA-Z0-9]*|[A-Z0-9]+[a-z]+[a-zA-Z0-9]*$/;
 
     let result = password.match(pattern);
     if (result === null) return false;

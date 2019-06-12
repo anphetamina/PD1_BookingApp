@@ -2,6 +2,7 @@
 session_start();
 
 include "src/php/common.php";
+include "src/php/auth.php";
 
 checkTime();
 
@@ -31,8 +32,7 @@ if (!empty($_POST)) {
 }
 
 define('TIMEOUT', 'timeOut');
-define('LOGOUT_SUCCESS', 'logoutSuccess');
-define('LOGOUT_ERROR', 'logoutError');
+
 ?>
 
 <!DOCTYPE html>
@@ -119,8 +119,8 @@ define('LOGOUT_ERROR', 'logoutError');
             echo "<button id='book-button' type='submit'>Prenota posti</button>";
             echo "</form>";
 
-            echo "<form id='logout-form' action='src/php/auth.php'>";
-            echo "<button id='logout-button' type='submit'>Logout</button>";
+            echo "<form id='logout-form' action='index.php' method='POST'>";
+            echo "<button id='logout-button' type='submit' name='action' value='logout'>Logout</button>";
             echo "</form>";
 
             echo "<p id='welcome-msg'>Bentornato ".$_SESSION['user']."</p>";

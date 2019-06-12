@@ -5,8 +5,9 @@ include "db.php";
 define('LOGIN_SUCCESS', 0);
 define('LOGIN_FAILED', -1);
 define('LOGIN_ERROR', -2);
-define('LOGOUT_SUCCESS', 1);
-define('LOGOUT_FAILED', -3);
+define('LOGOUT_SUCCESS', 'logoutSuccess');
+define('LOGOUT_ERROR', 'logoutError');
+define('LOGOUT_FAILED', 'logoutFailed');
 define('PASSWORD_NOT_VALID', -4);
 define('USERNAME_NOT_VALID', -5);
 
@@ -54,7 +55,7 @@ function checkEmail($username) {
 }
 
 function checkPassword($psw) {
-    $pattern = '/^([a-z]+[A-Z0-9]+|[A-Z0-9]+[a-z]+){1,50}$/';
+    $pattern = '/^[a-z]+[A-Z0-9]+[a-zA-Z0-9]*|[A-Z0-9]+[a-z]+[a-zA-Z0-9]*$/';
     if (preg_match($pattern, $psw)) {
         return strlen($psw)>=2 && strlen($psw)<=100;
     }
