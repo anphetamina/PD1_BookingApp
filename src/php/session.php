@@ -4,10 +4,8 @@ function destroySession() {
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
         setcookie(session_name(), '', time() - 3600*24, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
+        $_SESSION = array();
         session_destroy();
-        $_SESSION['authenticated'] = false;
-        $_SESSION['user'] = 'visitor';
-        $_SESSION['timeout'] = true;
         return true;
     }
 
@@ -15,14 +13,17 @@ function destroySession() {
 }
 
 function checkTime() {
-    $diff = time() - $_SESSION['time'];
+    if (isset($_SESSION['time']) && isset($_SESSION['user'])) {
+        $diff = time() - $_SESSION['time'];
 
-    if($diff > 2*60) { // minutes
-        logout();
-        redirect('index.php?msg=-1');
+        if($diff > 2*60) { // minutes
+            $_SESSION['timeout'] = true;
+            if(destroySession()) redirect('index.php?msg=timeOut');
+        }
+
+        $_SESSION['time'] = time();
     }
 
-    $_SESSION['time'] = time();
 }
 
 function redirect($page) {

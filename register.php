@@ -1,17 +1,13 @@
 <?php
+session_start();
 
 include "src/php/signup.php";
-
-
-if ($authenticated) {
-    redirect('index.php');
-}
 
 if (!empty($_POST)) {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
 
-        if ($action === 'register' && !$authenticated) {
+        if ($action === 'register' && !isset($_SESSION['user'])) {
             if (isset($_POST['username']) && isset($_POST['password1']) && isset($_POST['password2'])) {
                 $username = $_POST['username'];
                 $password1 = $_POST['password1'];
@@ -67,35 +63,35 @@ header
         <?php
 
         if (!empty($_GET)) {
-            if (isset($_GET['msg'])) {
+            if (isset($_GET['msg']) && !isset($_SESSION['user']) && isset($response)) {
                 $msg = $_GET['msg'];
                 switch ($msg) {
                     case REGISTRATION_SUCCESS:
-                        $msg = 'Registrazione avvenuta con successo';
+                        if($response === REGISTRATION_SUCCESS) echo 'Registrazione avvenuta con successo';
                         break;
 
                     case REGISTRATION_FAILED:
-                        $msg = 'Registrazione fallita';
+                        if($response === REGISTRATION_FAILED) echo 'Registrazione fallita';
                         break;
 
                     case USERNAME_ALREADY_EXISTS:
-                        $msg = 'Username già esistente';
+                        if($response === USERNAME_ALREADY_EXISTS) echo 'Username già esistente';
                         break;
 
                     case USERNAME_NOT_VALID:
-                        $msg = 'Username non valido';
+                        if($response === USERNAME_NOT_VALID) echo 'Username non valido';
                         break;
 
                     case PASSWORD_NOT_VALID:
-                        $msg = 'Password non valida';
+                        if($response === PASSWORD_NOT_VALID) echo 'Password non valida';
                         break;
 
                     case PASSWORD_NOT_EQUAL:
-                        $msg = 'Le password non coincidono';
+                        if($response === PASSWORD_NOT_EQUAL) echo 'Le password non coincidono';
                         break;
 
                     case PASSWORD_NULL:
-                        $msg = 'Password sbagliata';
+                        if($response === PASSWORD_NULL) echo 'Password sbagliata';
                         break;
 
                     default:

@@ -1,11 +1,40 @@
 <?php
+session_start();
+
 include "src/php/common.php";
 
-global $authenticated;
-global $user;
-global $timeout;
+checkTime();
 
-define('TIMEOUT', -1);
+if (!empty($_POST)) {
+    if (isset($_POST['action'])) {
+        $action = $_POST['action'];
+
+        if ($action == 'logout' && isset($_SESSION['user']) && isset($_SESSION['timeout'])) {
+            $response = logout();
+
+            switch ($response) {
+                case LOGOUT_SUCCESS:
+                    redirect('index.php?msg=' . LOGOUT_SUCCESS); // session already destroyed
+                    break;
+
+                case LOGOUT_FAILED:
+                    redirect('index.php?msg=' . LOGOUT_FAILED);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+
+    }
+}
+
+
+
+define('TIMEOUT', 'timeOut');
+define('LOGOUT_SUCCESS', 'logoutSuccess');
+define('LOGOUT_ERROR', 'logoutError');
 ?>
 
 <!DOCTYPE html>
@@ -45,11 +74,32 @@ define('TIMEOUT', -1);
     <p id="p-msg">
         <?php
         if (!empty($_GET)) {
-            if (isset($_GET['msg']) && isset($timeout)) {
-                if ($_GET['msg'] == -1 && $timeout)
-                    echo 'Sessione scaduta';
+            if (isset($_GET['msg'])) {
+                $msg = $_GET['msg'];
+
+                switch ($msg){
+                    case TIMEOUT:
+                        if (isset($_SESSION['timeout'])) {
+                            if ($_SESSION['timeout']) echo 'Sessione scaduta';
+                        };
+                        break;
+
+                    case LOGOUT_SUCCESS:
+                        if($response === LOGOUT_SUCCESS) echo 'Logout riuscito';
+                        break;
+
+                    case LOGOUT_FAILED:
+                        if($response === LOGOUT_FAILED) echo 'Logout non riuscito';
+                        break;
+
+                    default:
+                        break;
+                }
+
             }
         }
+
+
         ?>
     </p>
 </div>
@@ -60,16 +110,22 @@ define('TIMEOUT', -1);
     </form>
 
     <?php
-    if ($authenticated) {
-        echo "<form id='book-form' action='#'>";
-        echo "<button id='book-button' type='submit'>Prenota posti</button>";
-        echo "</form>";
 
-        echo "<form id='logout-form' action='src/php/auth.php'>";
-        echo "<button id='logout-button' type='submit'>Logout</button>";
-        echo "</form>";
+    if (isset($_SESSION['user']) && isset($_SESSION['timeout'])) {
 
-        echo "<p id='welcome-msg'>Bentornato ".$user."</p>";
+        if (!$_SESSION['timeout']) {
+            echo "<form id='book-form' action='#'>";
+            echo "<button id='book-button' type='submit'>Prenota posti</button>";
+            echo "</form>";
+
+            echo "<form id='logout-form' action='src/php/auth.php'>";
+            echo "<button id='logout-button' type='submit'>Logout</button>";
+            echo "</form>";
+
+            echo "<p id='welcome-msg'>Bentornato ".$_SESSION['user']."</p>";
+        }
+
+
     } else {
         echo "<form action='login.php'>";
         echo "<button id='login-button'>Login</button>";

@@ -1,17 +1,14 @@
 <?php
+session_start();
 
 include "src/php/auth.php";
 
-
-if ($authenticated) {
-    redirect('index.php');
-}
 
 if (!empty($_POST)) {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
 
-        if ($action == 'login' && !$authenticated) {
+        if ($action == 'login' && !isset($_SESSION['user'])) {
             if (isset($_POST['username']) && isset($_POST['password'])) {
                 $username = $_POST['username'];
                 $password = $_POST['password'];
@@ -20,9 +17,9 @@ if (!empty($_POST)) {
 
                 switch ($response) {
                     case LOGIN_SUCCESS:
-                        $_SESSION['authenticated'] = true;
                         $_SESSION['user'] = $username;
                         $_SESSION['time'] = time();
+                        $_SESSION['timeout'] = false;
                         redirect('index.php');
                         break;
 
@@ -43,24 +40,7 @@ if (!empty($_POST)) {
             }
         }
 
-        if ($action == 'logout' && $authenticated) {
-            $response = logout();
 
-            switch ($response) {
-                case LOGOUT_SUCCESS:
-                    $timeout = false;
-                    redirect('login.php?msg=' . LOGOUT_SUCCESS);
-                    break;
-
-                case LOGOUT_FAILED:
-                    $timeout = true;
-                    redirect('login.php?msg=' . LOGOUT_FAILED);
-                    break;
-
-                default:
-                    break;
-            }
-        }
     }
 }
 
@@ -102,28 +82,20 @@ if (!empty($_POST)) {
         <?php
 
         if (!empty($_GET)) {
-            if (isset($_GET['msg'])) {
+            if (isset($_GET['msg']) && isset($_SESSION['user']) && isset($response)) {
                 $msg = $_GET['msg'];
 
                 switch ($msg) {
                     case LOGIN_SUCCESS:
-                        $msg = 'Login effettuato';
+                        if($response === LOGOUT_SUCCESS) echo 'Login effettuato';
                         break;
 
                     case LOGIN_FAILED:
-                        $msg = 'Password errata';
+                        if($response === LOGIN_FAILED) echo 'Password errata';
                         break;
 
                     case LOGIN_ERROR:
-                        $msg = 'Login non riuscito';
-                        break;
-
-                    case LOGOUT_SUCCESS:
-                        $msg = 'Logout riuscito';
-                        break;
-
-                    case LOGOUT_FAILED:
-                        $msg = 'Logout non riuscito';
+                        if($response === LOGIN_ERROR) echo 'Login non riuscito';
                         break;
 
                     default:
@@ -132,7 +104,6 @@ if (!empty($_POST)) {
                 }
             }
         }
-
         ?>
     </p>
 </div>
