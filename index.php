@@ -30,8 +30,6 @@ if (!empty($_POST)) {
     }
 }
 
-
-
 define('TIMEOUT', 'timeOut');
 define('LOGOUT_SUCCESS', 'logoutSuccess');
 define('LOGOUT_ERROR', 'logoutError');
@@ -80,7 +78,10 @@ define('LOGOUT_ERROR', 'logoutError');
                 switch ($msg){
                     case TIMEOUT:
                         if (isset($_SESSION['timeout'])) {
-                            if ($_SESSION['timeout']) echo 'Sessione scaduta';
+                            if ($_SESSION['timeout']){
+                                echo 'Sessione scaduta';
+                                $_SESSION = array();
+                            }
                         };
                         break;
 

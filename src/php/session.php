@@ -4,7 +4,7 @@ function destroySession() {
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
         setcookie(session_name(), '', time() - 3600*24, $params['path'], $params['domain'], $params['secure'], $params['httponly']);
-        $_SESSION = array();
+        // $_SESSION = array();
         session_destroy();
         return true;
     }
@@ -19,6 +19,7 @@ function checkTime() {
         if($diff > 2*60) { // minutes
             $_SESSION['timeout'] = true;
             if(destroySession()) redirect('index.php?msg=timeOut');
+            else echo 'Timeout error';
         }
 
         $_SESSION['time'] = time();
