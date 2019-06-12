@@ -55,33 +55,28 @@ $timeout = checkTime();
 
         if ($timeout) {
             echo 'Sessione scaduta';
-        }
-
-        if (!empty($_POST)) {
+        } else if (!empty($_POST)) {
             if (isset($_POST['action'])) {
-                if (isset($_SESSION['user']) && isset($_SESSION['timeout'])) {
-                    if (!$_SESSION['timeout']) {
-                        $msg = logout();
+                if (isset($_SESSION['user'])) {
+                    $msg = logout();
 
-                        switch ($msg) {
-                            case LOGOUT_SUCCESS:
-                                echo 'Logout riuscito';
-                                break;
+                    switch ($msg) {
+                        case LOGOUT_SUCCESS:
+                            echo 'Logout riuscito';
+                            break;
 
-                            case LOGOUT_FAILED:
-                                echo 'Logout fallito';
-                                break;
+                        case LOGOUT_FAILED:
+                            echo 'Logout fallito';
+                            break;
 
-                            case LOGOUT_ERROR:
-                                echo 'Errore';
-                                break;
+                        case LOGOUT_ERROR:
+                            echo 'Errore';
+                            break;
 
-                            default:
-                                break;
+                        default:
+                            break;
 
-                        }
                     }
-
                 }
             }
         }
@@ -99,17 +94,15 @@ $timeout = checkTime();
 
     if (isset($_SESSION['user']) && !$timeout) {
 
-        if (!$_SESSION['timeout']) {
-            echo "<form id='book-form' action='#'>";
-            echo "<button id='book-button' type='submit'>Prenota posti</button>";
-            echo "</form>";
+        echo "<form id='book-form' action='index.php' method='POST'>";
+        echo "<button id='book-button' type='submit' name='action' value='book'>Prenota posti</button>";
+        echo "</form>";
 
-            echo "<form id='logout-form' action='index.php' method='POST'>";
-            echo "<button id='logout-button' type='submit' name='action' value='logout'>Logout</button>";
-            echo "</form>";
+        echo "<form id='logout-form' action='index.php' method='POST'>";
+        echo "<button id='logout-button' type='submit' name='action' value='logout'>Logout</button>";
+        echo "</form>";
 
-            echo "<p id='welcome-msg'>Bentornato ".$_SESSION['user']."</p>";
-        }
+        echo "<p id='welcome-msg'>Bentornato ".$_SESSION['user']."</p>";
 
 
     } else {

@@ -1,11 +1,12 @@
 <?php
 
-if (isset($_SESSION['count']) && !isset($count)) {
+if (isset($_SESSION['count'])) {
     $count = $_SESSION['count']++;
 } else $count = $_SESSION['count'] = 0;
 
 define('TIMEOUT', 'timeOut');
 define('TIMEOUT_ERROR', 'timeOutError');
+define('NOT_LOGGED_IN', 'notAuthenticated');
 
 function testCookie() {
 

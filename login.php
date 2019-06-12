@@ -16,7 +16,7 @@ if (!empty($_POST)) {
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
 
-        if ($action == 'login' && !isset($_SESSION['user']) && !isset($_SESSION['authenticated'])) {
+        if ($action == 'login' && !isset($_SESSION['user'])) {
             if (isset($_POST['username']) && isset($_POST['password'])) {
                 $username = $_POST['username'];
                 $password = $_POST['password'];
@@ -27,8 +27,6 @@ if (!empty($_POST)) {
                     case LOGIN_SUCCESS:
                         $_SESSION['user'] = $username;
                         $_SESSION['time'] = time();
-                        $_SESSION['timeout'] = false;
-                        $_SESSION['authenticated'] = true;
                         redirect('index.php');
                         break;
 
@@ -91,7 +89,7 @@ if (!empty($_POST)) {
         <?php
 
         if (!empty($_GET)) {
-            if (isset($_GET['msg']) && !isset($_SESSION['user']) && !isset($_SESSION['authenticated'])) {
+            if (isset($_GET['msg']) && !isset($_SESSION['user'])) {
                 $msg = $_GET['msg'];
 
                 switch ($msg) {

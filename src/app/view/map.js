@@ -73,12 +73,11 @@ class MapView {
         cell.setAttribute('class', state);
     }
 
-    refreshCounter() {
-
+    refreshMsg(msg) {
+        document.getElementById('response-msg').innerHTML = msg;
     }
 
-
-    getSeatId(cell) {
-        return cell.getAttribute('id');
+    getSeat(cell) {
+        return {id: cell.getAttribute('id'), current_state: cell.getAttribute('class')};
     }
 }

@@ -38,14 +38,27 @@ class MapModel {
     }
 
 
-    updateSeat(id, callback) {
+    updateSeat(seat, callback) {
+        let id = seat['id'];
+        let current_state = seat['current_state'];
         $.ajax({
-            url: 'src/php/data.php',
-            type: 'GET',
-            data: {action: 'getSeatState', id: id},
+            url: 'src/php/booking.php',
+            type: 'POST',
+            data: {action: 'updateSeat', id: id},
             success: function (result) {
-                let new_state = result;
-                callback(new_state);
+                switch (result) {
+                    case 'timeOut':
+                        // todo print timeout msg
+                        break;
+
+                    case 'notAuthenticated':
+                        callback(current_state, result);
+                        break;
+
+                    default:
+                        // todo callback
+                        break;
+                }
             },
             error: undefined
         });

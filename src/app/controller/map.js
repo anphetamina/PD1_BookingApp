@@ -9,17 +9,18 @@ class MapController {
         let _this = this;
         this.model.init(function (data) {
             _this.view.printMap(data, function (event) {
-                _this.selectSeat(_this.view.getSeatId(event.target));
+                _this.selectSeat(_this.view.getSeat(event.target));
             });
         });
     }
 
 
-    selectSeat(id) {
+    selectSeat(seat) {
         let _this = this;
-        this.model.updateSeat(id, function (new_state) {
+        let id = seat['id'];
+        this.model.updateSeat(seat, function (new_state, msg) {
             _this.view.refreshCell(id, new_state);
-
+            _this.view.refreshMsg(msg);
         });
     }
 

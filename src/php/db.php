@@ -8,6 +8,8 @@ define('PASS', '');
 define('DB', 'booking_app');
 define('DB_OK', 10);
 
+db_get_seat('1A');
+
 
 function db_get_connection() {
     $connection = mysqli_connect(HOST, USER, PASS, DB);
@@ -94,6 +96,31 @@ function db_get_seat_state($id) {
     $connection->commit();
     $connection->close();
     return $state;
+}
+
+function db_get_seat($id) {
+    $connection = db_get_connection();
+    $query = "select state, user from seat where seat_id = ? for update";
+    $seat = array();
+    if($stmt = $connection->prepare($query)) {
+        $stmt->bind_param("s", $id);
+        try {
+            if(!$stmt->execute())
+                throw new Exception('db_get_seat failed');
+            $result = $stmt->get_result();
+            $seat = $result->fetch_assoc();
+            $stmt->close();
+        } catch (Exception $exception) {
+            $connection->autocommit(true);
+            if($stmt!=null) $stmt->close();
+            $connection->close();
+            return null;
+        }
+    }
+
+    /*$connection->commit();
+    $connection->close();*/
+    return $seat;
 }
 
 function db_count($table) {
