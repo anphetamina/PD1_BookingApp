@@ -76,15 +76,31 @@ class MapModel {
             type: 'POST',
             data: {action: 'buySeats', selected_seats: json_seats},
             success: function (result) {
-                let not_purchased_seats = JSON.parse(result);
-                if (not_purchased_seats.length !== 0) {
-                    let msg = 'Non è stato possibile acquistare i posti ';
-                    for (let i = 0; i < not_purchased_seats.length; i++) {
-                        msg.concat(not_purchased_seats[i]);
-                    }
-                } else {
-                    callback('Acquisto confermato');
+
+                switch (result) {
+                    case 'timeOut':
+                        callback('Sessione scaduta');
+                        break;
+
+                    default:
+                        let not_purchased_seats = JSON.parse(result);
+                        if (not_purchased_seats.length !== 0) {
+                            let msg = 'Non è stato possibile acquistare i posti ';
+                            for (let i = 0; i < not_purchased_seats.length; i++) {
+                                msg.concat(not_purchased_seats[i]);
+                            }
+                        } else {
+                            $("form :input").prop("disabled", true);
+                            $("button").prop("disabled", true);
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000);
+                            callback('Acquisto confermato');
+                        }
+                        break;
+
                 }
+
             },
             error: undefined
         });

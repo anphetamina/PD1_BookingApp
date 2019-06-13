@@ -28,7 +28,7 @@ if (!empty($_POST)) {
                 if (isset($_POST['selected_seats'])) {
                     $selected_seats = json_decode($_POST['selected_seats']);
 
-                    $not_purchasable_seats = buySeats();
+                    $not_purchasable_seats = buySeats($selected_seats, $user);
 
                     echo json_encode($not_purchasable_seats);
 
@@ -125,7 +125,7 @@ function buySeats($selected_seats, $user) {
         }
     }
 
-    if (count($seats)!==0) {
+    if (count($seats)===0) {
 
         $connection = db_get_connection();
 
@@ -144,6 +144,9 @@ function buySeats($selected_seats, $user) {
                 echo 'Error';
             }
         }
+
+        $connection->commit();
+        $connection->close();
 
     }
 
