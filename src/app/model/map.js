@@ -45,11 +45,11 @@ class MapModel {
             success: function (result) {
                 switch (result) {
                     case 'timeOut':
-                        callback(current_state, "Sessione scaduta");
-                        $("form :input").prop("disabled", true);
+                        $("button").prop("disabled", true);
                         setTimeout(function () {
                             location.reload();
                         }, 1000);
+                        callback(current_state, "Sessione scaduta");
                         break;
 
                     case 'notAuthenticated':
@@ -90,7 +90,6 @@ class MapModel {
                                 msg.concat(not_purchased_seats[i]);
                             }
                         } else {
-                            $("form :input").prop("disabled", true);
                             $("button").prop("disabled", true);
                             setTimeout(function () {
                                 location.reload();

@@ -34,6 +34,7 @@ $timeout = checkTime();
     <script type="text/javascript">
         $(function () {
             loadMap();
+
         });
     </script>
 
