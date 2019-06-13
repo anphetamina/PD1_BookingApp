@@ -24,8 +24,15 @@ if (!empty($_POST)) {
                 }
                 break;
 
-            case 'bookSeats':
+            case 'buySeats':
+                if (isset($_POST['selected_seats'])) {
+                    $selected_seats = json_decode($_POST['selected_seats']);
 
+                    $not_purchasable_seats = buySeats();
+
+                    echo json_encode($not_purchasable_seats);
+
+                }
                 break;
 
             default:
@@ -109,6 +116,36 @@ function selectSeat($id, $current_state, $user) {
     return $state;
 }
 
-function bookSeats() {
+function buySeats($selected_seats, $user) {
 
+    $seats = array();
+    foreach ($selected_seats as $seat => $id) {
+        if(db_get_seat_state_by_user($id, $user) === 'free' || db_get_seat_state_by_user($id, $user) === 'bought') {
+            $seats[] = $id; // it means some seats has been already been bought by the user or the current seat view is not updated
+        }
+    }
+
+    if (count($seats)!==0) {
+
+        $connection = db_get_connection();
+
+        $query = "update seat set state = 'bought' where user = ?";
+
+        if($stmt = $connection->prepare($query)) {
+            $stmt->bind_param("s", $user);
+            try {
+                if(!$stmt->execute())
+                    throw new Exception('bookSeats failed');
+                $stmt->close();
+            } catch (Exception $exception) {
+                $connection->autocommit(true);
+                if($stmt!=null) $stmt->close();
+                $connection->close();
+                echo 'Error';
+            }
+        }
+
+    }
+
+    return $seats;
 }

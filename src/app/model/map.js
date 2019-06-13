@@ -65,5 +65,31 @@ class MapModel {
         });
     }
 
+    updateSeats(seats, callback) {
+        let selected_seats = {};
+        for (let i = 0; i < seats.length; i++) {
+            selected_seats[i] = seats[i].id;
+        }
+        let json_seats = JSON.stringify(selected_seats);
+        $.ajax({
+            url: 'src/php/booking.php',
+            type: 'POST',
+            data: {action: 'buySeats', selected_seats: json_seats},
+            success: function (result) {
+                let not_purchased_seats = JSON.parse(result);
+                if (not_purchased_seats.length !== 0) {
+                    let msg = 'Non è stato possibile acquistare i posti ';
+                    for (let i = 0; i < not_purchased_seats.length; i++) {
+                        msg.concat(not_purchased_seats[i]);
+                    }
+                } else {
+                    callback('Acquisto confermato');
+                }
+            },
+            error: undefined
+        });
+    }
+
+
 
 }

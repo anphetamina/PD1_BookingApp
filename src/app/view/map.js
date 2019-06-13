@@ -21,22 +21,36 @@ class MapView {
             let row = this.table.insertRow(i);
             for (let j = 0; j < M; j++) {
                 let cell = row.insertCell(j);
+                let button = document.createElement('button');
+                cell.append(button);
                 let id = (i+1).toString()+String.fromCharCode("A".charCodeAt(0)+j);
-                cell.innerHTML = id;
-                cell.addEventListener('click', listener);
+                button.innerHTML = id;
+                button.addEventListener('click', listener);
                 let state = seats[id].state;
-                cell.setAttribute('id', id);
+                button.setAttribute('id', id);
+                /*button.setAttribute('name', id);
+                button.setAttribute('value', id);*/
                 if (state === 'booked' && seats[id].user === user) state = 'selected';
-                cell.setAttribute('class', state);
+                button.setAttribute('class', state);
+                button.setAttribute('type', 'button');
             }
         }
     }
 
     printBookingButton(listener) {
-        $("#navigation-div").load('src/app/template/booking_form.html', function () { // todo replacement
-            $("#book-form").submit(listener);
+        let navigationDiv = document.getElementById("navigation-div");
+        let bookingButton = document.createElement('button');
+        bookingButton.setAttribute('id', 'book-button');
+        bookingButton.setAttribute('name', 'action');
+        bookingButton.setAttribute('value', 'bookSeats');
+        bookingButton.setAttribute('type', 'submit');
+        navigationDiv.append(bookingButton);
 
-        })
+        bookingButton.innerHTML = "Acquista posti";
+
+
+        $("#book-button").on("click", listener);
+
     }
 
     refreshCell(id, state) {
@@ -49,7 +63,7 @@ class MapView {
     }
 
     getSelectedSeats() {
-        return $(".selected").serializeArray();
+        return document.getElementsByClassName('selected');
     }
 
     getSeat(cell) {

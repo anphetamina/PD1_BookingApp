@@ -70,6 +70,33 @@ function db_get_seats() {
     return $seats;
 }
 
+function db_get_booked_seats($user) {
+
+    $connection = db_get_connection();
+    $query = "select * from seat where user=? and state='booked' for update";
+    $booked_seats = array();
+    if($stmt = $connection->prepare($query)) {
+        $stmt->bind_param("s", $user);
+        try {
+            if(!$stmt->execute())
+                throw new Exception('db_get_booked_seats failed');
+            $result = $stmt->get_result();
+            while($row = $result->fetch_assoc())
+                $booked_seats[$row['seat_id']] = $row;
+            $stmt->close();
+        } catch (Exception $exception) {
+            $connection->autocommit(true);
+            if($stmt!=null) $stmt->close();
+            $connection->close();
+            return null;
+        }
+    }
+
+    $connection->commit();
+    $connection->close();
+    return $booked_seats;
+}
+
 function db_get_seat_state($id) {
 
     $connection = db_get_connection();
@@ -77,6 +104,31 @@ function db_get_seat_state($id) {
     $state = null;
     if($stmt = $connection->prepare($query)) {
         $stmt->bind_param("s", $id);
+        try {
+            if(!$stmt->execute())
+                throw new Exception('db_get_seat_state failed');
+            $stmt->bind_result($state);
+            $stmt->fetch();
+            $stmt->close();
+        } catch (Exception $exception) {
+            $connection->autocommit(true);
+            if($stmt!=null) $stmt->close();
+            $connection->close();
+            return $state;
+        }
+    }
+
+    $connection->commit();
+    $connection->close();
+    return $state;
+}
+
+function db_get_seat_state_by_user($id, $user) {
+    $connection = db_get_connection();
+    $query = "select state from seat where seat_id = ? and user = ? for update";
+    $state = null;
+    if($stmt = $connection->prepare($query)) {
+        $stmt->bind_param("ss", $id, $user);
         try {
             if(!$stmt->execute())
                 throw new Exception('db_get_seat_state failed');

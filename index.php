@@ -6,9 +6,13 @@ session_start();
 include "src/php/common.php";
 include "src/php/auth.php";
 
+$_SESSION['user'] = 'u1@p.it';
+$_SESSION['time'] = time();
+
 if (isset($_SESSION['user'])) {
     httpsRedirect();
 }
+
 
 
 $timeout = checkTime();
@@ -30,7 +34,6 @@ $timeout = checkTime();
     <script type="text/javascript">
         $(function () {
             loadMap();
-            // loadBookingButton();
         });
     </script>
 
@@ -88,17 +91,13 @@ $timeout = checkTime();
 </div>
 
 <div id="navigation-div">
-    <form action="index.php">
+    <form id="refresh-form" action="index.php">
         <button id="map-button">Aggiorna mappa</button>
     </form>
 
     <?php
 
     if (isset($_SESSION['user']) && !$timeout) {
-
-//        echo "<form id='book-form'>";
-        echo "<button></button>";
-//        echo "</form>";
 
         echo "<form id='logout-form' action='index.php' method='POST'>";
         echo "<button id='logout-button' type='submit' name='action' value='logout'>Logout</button>";
