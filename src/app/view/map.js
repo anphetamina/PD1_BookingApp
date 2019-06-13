@@ -22,8 +22,6 @@ class MapView {
     printCells(data, listener) {
         this.table = document.getElementById("map-table");
 
-        console.log(data);
-
         let N = data['N'];
         let M = data['M'];
         let seats = data['seats'];

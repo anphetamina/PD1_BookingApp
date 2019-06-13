@@ -102,3 +102,14 @@ function loadRegisterForm() {
         document.getElementById("p-msg").innerHTML = 'Per effettuare una registrazione occorre abilitare i cookie';
     }
 }
+
+function loadBookingButton() {
+    if (testCookie()) {
+        let bookingForm = document.getElementById("book-form");
+        if(bookingForm) {
+            bookingForm.setAttribute('action', 'index.php');
+            bookingForm.setAttribute('method', 'POST');
+            // $("#book-form").submit();
+        }
+    }
+}

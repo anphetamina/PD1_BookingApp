@@ -24,7 +24,7 @@ if (!empty($_POST)) {
                 }
                 break;
 
-            case 'book':
+            case 'bookSeats':
 
                 break;
 
@@ -107,4 +107,8 @@ function selectSeat($id, $current_state, $user) {
     $connection->commit();
     $connection->close();
     return $state;
+}
+
+function bookSeats() {
+
 }
