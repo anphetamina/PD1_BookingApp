@@ -8,8 +8,6 @@ define('PASS', '');
 define('DB', 'booking_app');
 define('DB_OK', 10);
 
-db_get_seat('1A');
-
 
 function db_get_connection() {
     $connection = mysqli_connect(HOST, USER, PASS, DB);
@@ -57,7 +55,7 @@ function db_get_seats() {
                 throw new Exception('db_get_seats failed');
             $result = $stmt->get_result();
             while($row = $result->fetch_assoc())
-                $seats[] = $row;
+                $seats[$row['seat_id']] = $row;
             $stmt->close();
         } catch (Exception $exception) {
             $connection->autocommit(true);

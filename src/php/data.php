@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 include "common.php";
 include "db.php";
 
@@ -30,6 +32,12 @@ if(!empty($_GET)) {
                     $id = $_GET['id'];
                     echo db_get_seat_state($id);
                 };
+                break;
+
+            case 'getUser':
+                if (isset($_SESSION['user'])) {
+                    echo $_SESSION['user'];
+                } else echo 'null';
                 break;
 
 

@@ -57,7 +57,9 @@ $timeout = checkTime();
             echo 'Sessione scaduta';
         } else if (!empty($_POST)) {
             if (isset($_POST['action'])) {
-                if (isset($_SESSION['user'])) {
+                $action = $_POST['action'];
+
+                if (isset($_SESSION['user']) && $action === 'logout') {
                     $msg = logout();
 
                     switch ($msg) {

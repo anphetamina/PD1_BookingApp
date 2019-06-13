@@ -20,14 +20,18 @@ class MapModel {
                 type: 'GET',
                 data: {action: 'getSeats'},
             }),
-        ).done(function (res1, res2, res3) {
+            $.ajax({
+                url: 'src/php/data.php',
+                type: 'GET',
+                data: {action: 'getUser'},
+            }),
+        ).done(function (res1, res2, res3, res4) {
             if (res1[2]['readyState'] === 4) {
                 if (res1[2]['status'] === 200 || res1[2]['status'] === 0) {
                     let dims = JSON.parse(res2[0]);
                     let seats = JSON.parse(res3[0]);
-                    console.log(dims);
-                    console.log(seats);
-                    callback({N: dims[0], M: dims[1], seats: seats});
+                    let user = res4[0];
+                    callback({N: dims[0], M: dims[1], seats: seats, user: user});
                 }
             } else {
                 console.log('DB ERROR');
@@ -44,19 +48,23 @@ class MapModel {
         $.ajax({
             url: 'src/php/booking.php',
             type: 'POST',
-            data: {action: 'updateSeat', id: id},
+            data: {action: 'updateSeat', id: id, current_state: current_state},
             success: function (result) {
                 switch (result) {
                     case 'timeOut':
-                        // todo print timeout msg
+                        callback(current_state, "Sessione scaduta");
+                        $("form :input").prop("disabled", true);
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
                         break;
 
                     case 'notAuthenticated':
-                        callback(current_state, result);
+                        callback(current_state, "Per effettuare una prenotazione autenticarsi al sito");
                         break;
 
                     default:
-                        // todo callback
+                        callback(result, "");
                         break;
                 }
             },
