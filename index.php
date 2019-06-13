@@ -30,7 +30,7 @@ $timeout = checkTime();
     <script type="text/javascript">
         $(function () {
             loadMap();
-            loadBookingButton();
+            // loadBookingButton();
         });
     </script>
 
@@ -96,9 +96,9 @@ $timeout = checkTime();
 
     if (isset($_SESSION['user']) && !$timeout) {
 
-        echo "<form id='book-form'>";
-        echo "<button id='book-button' type='submit' name='action' value='bookSeats'>Prenota posti</button>";
-        echo "</form>";
+//        echo "<form id='book-form'>";
+        echo "<button></button>";
+//        echo "</form>";
 
         echo "<form id='logout-form' action='index.php' method='POST'>";
         echo "<button id='logout-button' type='submit' name='action' value='logout'>Logout</button>";

@@ -11,6 +11,12 @@ class MapController {
             _this.view.printMap(data, function (event) {
                 _this.selectSeat(_this.view.getSeat(event.target));
             });
+
+            if (data['user'] !== 'null')
+                _this.view.printBookingButton(function (event) {
+                    event.preventDefault();
+                    _this.bookSeats(_this.view.getSelectedSeats(), event);
+                });
         });
     }
 
@@ -24,8 +30,12 @@ class MapController {
         });
     }
 
-    bookSeats(data) {
-
+    bookSeats(selected_seats, event) {
+        let _this = this;
+        if (selected_seats.length === 0) {
+            event.preventDefault();
+            _this.view.refreshMsg('Selezionare almeno un posto per effettuare una prenotazione');
+        } else _this.view.refreshMsg('Prenotazione in corso');
     }
 
 

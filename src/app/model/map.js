@@ -1,7 +1,6 @@
 class MapModel {
 
-    constructor() {
-    }
+    constructor() {}
 
     init(callback) {
         $.when(
@@ -26,16 +25,10 @@ class MapModel {
                 data: {action: 'getUser'},
             }),
         ).done(function (res1, res2, res3, res4) {
-            if (res1[2]['readyState'] === 4) {
-                if (res1[2]['status'] === 200 || res1[2]['status'] === 0) {
-                    let dims = JSON.parse(res2[0]);
-                    let seats = JSON.parse(res3[0]);
-                    let user = res4[0];
-                    callback({N: dims[0], M: dims[1], seats: seats, user: user});
-                }
-            } else {
-                console.log('DB ERROR');
-            }
+            let dims = JSON.parse(res2[0]);
+            let seats = JSON.parse(res3[0]);
+            let user = res4[0];
+            callback({N: dims[0], M: dims[1], seats: seats, user: user});
         });
 
 

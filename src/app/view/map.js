@@ -1,15 +1,5 @@
 class MapView {
-    constructor() {
-        this.total_seats_count = 0;
-        this.free_seats_count = 0;
-        this.booked_seats_count = 0;
-        this.bought_seats_count = 0;
-
-    }
-
-    printButton() {
-
-    }
+    constructor() {}
 
     printMap(data, listener) {
         let _this = this;
@@ -35,13 +25,18 @@ class MapView {
                 cell.innerHTML = id;
                 cell.addEventListener('click', listener);
                 let state = seats[id].state;
-
                 cell.setAttribute('id', id);
-
                 if (state === 'booked' && seats[id].user === user) state = 'selected';
                 cell.setAttribute('class', state);
             }
         }
+    }
+
+    printBookingButton(listener) {
+        $("#navigation-div").load('src/app/template/booking_form.html', function () { // todo replacement
+            $("#book-form").submit(listener);
+
+        })
     }
 
     refreshCell(id, state) {
@@ -51,6 +46,10 @@ class MapView {
 
     refreshMsg(msg) {
         document.getElementById('response-msg').innerHTML = msg;
+    }
+
+    getSelectedSeats() {
+        return $(".selected").serializeArray();
     }
 
     getSeat(cell) {

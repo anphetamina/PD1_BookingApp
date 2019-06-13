@@ -103,6 +103,7 @@ function loadRegisterForm() {
     }
 }
 
+/*
 function loadBookingButton() {
     if (testCookie()) {
         let bookingForm = document.getElementById("book-form");
@@ -112,4 +113,4 @@ function loadBookingButton() {
             // $("#book-form").submit();
         }
     }
-}
+}*/
