@@ -1,12 +1,16 @@
 <?php
 session_start();
 
+if (!isset($_SESSION['cookie'])) {
+    header("Location: block.php");
+}
+
 
 include "src/php/auth.php";
 include "src/php/common.php";
 
 if (isset($_SESSION['user'])) {
-    redirect('index.php');
+    redirect('home.php');
 }
 
 httpsRedirect();
@@ -26,7 +30,7 @@ if (!empty($_POST)) {
                 if ($response === LOGIN_SUCCESS) {
                     $_SESSION['user'] = $username;
                     $_SESSION['time'] = time();
-                    redirect('index.php');
+                    redirect('home.php');
                 }
 
 
@@ -95,7 +99,7 @@ if (!empty($_POST)) {
 </div>
 
 <div id="navigation-div">
-    <form action="index.php">
+    <form action="home.php">
     <button id="map-button">Mappa</button>
     </form>
 

@@ -1,11 +1,15 @@
 <?php
 session_start();
 
+if (!isset($_SESSION['cookie'])) {
+    header("Location: block.php");
+}
+
 include "src/php/signup.php";
 include "src/php/common.php";
 
 if (isset($_SESSION['user'])) {
-    redirect('index.php');
+    redirect('home.php');
 }
 
 httpsRedirect();
@@ -109,7 +113,7 @@ header
 </div>
 
 <div id="navigation-div">
-    <form action="index.php">
+    <form action="home.php">
     <button id="map-button">Mappa</button>
     </form>
 
