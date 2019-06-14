@@ -39,7 +39,7 @@ if (!empty($_POST)) {
                         break;
 
                     default:
-                        // $msg = 'Messaggio non riconosciuto';
+
                         break;
                 }
 
@@ -95,15 +95,15 @@ if (!empty($_POST)) {
                 switch ($msg) {
 
                     case LOGIN_FAILED:
-                        echo 'Login fallito';
+                        if ($response === LOGIN_FAILED) echo 'Login fallito';
                         break;
 
                     case LOGIN_ERROR:
-                        echo 'Errore';
+                        if ($response === LOGIN_ERROR) echo 'Errore login';
                         break;
 
                     default:
-                        // $msg = 'Messaggio non riconosciuto';
+
                         break;
                 }
             }

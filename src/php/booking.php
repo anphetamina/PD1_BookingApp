@@ -120,14 +120,13 @@ function buySeats($selected_seats, $user) {
 
     $seats = array();
     foreach ($selected_seats as $seat => $id) {
-        if(db_get_seat_state_by_user($id, $user) === 'free' || db_get_seat_state_by_user($id, $user) === 'bought') {
-            $seats[] = $id; // it means some seats has been already been bought by the user or the current seat view is not updated
-        }
+        $count = db_get_count_booked_seat_by_user($id, $user);
+        if($count===0) $seats[] = $id;
     }
 
-    if (count($seats)===0) {
+    $connection = db_get_connection();
 
-        $connection = db_get_connection();
+    if (count($seats)===0) {
 
         $query = "update seat set state = 'bought' where user = ?";
 
@@ -140,15 +139,35 @@ function buySeats($selected_seats, $user) {
             } catch (Exception $exception) {
                 $connection->autocommit(true);
                 if($stmt!=null) $stmt->close();
-                $connection->close();
+//                $connection->close();
                 echo 'Error';
             }
         }
 
-        $connection->commit();
-        $connection->close();
+    } else {
+
+
+        $query = "update seat set state = 'free', user = 'null' where user = ?";
+
+        if($stmt = $connection->prepare($query)) {
+            $stmt->bind_param("s", $user);
+            try {
+                if(!$stmt->execute())
+                    throw new Exception('bookSeats failed');
+                $stmt->close();
+            } catch (Exception $exception) {
+                $connection->autocommit(true);
+                if($stmt!=null) $stmt->close();
+//                $connection->close();
+                echo 'Error';
+            }
+        }
+
 
     }
+
+    $connection->commit();
+    $connection->close();
 
     return $seats;
 }

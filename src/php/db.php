@@ -6,13 +6,14 @@ define('HOST', '127.0.0.1');
 define('USER', 'root');
 define('PASS', '');
 define('DB', 'booking_app');
-define('DB_OK', 10);
-
+define('DB_OK', 'dbOk');
+define('DB_ERROR', 'dbError');
+define('NULL', 'null');
 
 function db_get_connection() {
     $connection = mysqli_connect(HOST, USER, PASS, DB);
     if (!$connection) {
-        die('Connection error '.mysqli_errno().' '.mysqli_connect_error());
+        print 'Connection error '.mysqli_errno().' '.mysqli_connect_error();
     }
     $connection->autocommit(false);
     return $connection;
@@ -61,7 +62,7 @@ function db_get_seats() {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return null;
+            return array();
         }
     }
 
@@ -70,31 +71,30 @@ function db_get_seats() {
     return $seats;
 }
 
-function db_get_booked_seats($user) {
+function db_get_count_booked_seat_by_user($id, $user, $connection) {
 
-    $connection = db_get_connection();
-    $query = "select * from seat where user=? and state='booked' for update";
-    $booked_seats = array();
+//    $connection = db_get_connection();
+    $count = 0;
+    $query = "select count(*) from seat where user = ? and state='booked' and seat_id = ? for update";
     if($stmt = $connection->prepare($query)) {
-        $stmt->bind_param("s", $user);
+        $stmt->bind_param("ss", $user, $id);
         try {
             if(!$stmt->execute())
-                throw new Exception('db_get_booked_seats failed');
-            $result = $stmt->get_result();
-            while($row = $result->fetch_assoc())
-                $booked_seats[$row['seat_id']] = $row;
+                throw new Exception('db_get_count_booked_seat_by_user failed');
+            $stmt->bind_result($count);
+            $stmt->fetch();
             $stmt->close();
         } catch (Exception $exception) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
-            $connection->close();
-            return null;
+//            $connection->close();
+            return 1; // purchase failed
         }
     }
 
-    $connection->commit();
-    $connection->close();
-    return $booked_seats;
+    /*$connection->commit();
+    $connection->close();*/
+    return $count;
 }
 
 function db_get_seat_state($id) {
@@ -114,7 +114,7 @@ function db_get_seat_state($id) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return $state;
+            return DB_ERROR;
         }
     }
 
@@ -148,8 +148,8 @@ function db_get_seat_state_by_user($id, $user) {
     return $state;
 }
 
-function db_get_seat($id) {
-    $connection = db_get_connection();
+function db_get_seat($id, $connection) {
+//    $connection = db_get_connection();
     $query = "select state, user from seat where seat_id = ? for update";
     $seat = array();
     if($stmt = $connection->prepare($query)) {
@@ -163,7 +163,7 @@ function db_get_seat($id) {
         } catch (Exception $exception) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
-            $connection->close();
+//            $connection->close();
             return null;
         }
     }

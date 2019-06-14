@@ -56,12 +56,16 @@ class MapModel {
                         callback(current_state, "Per effettuare una prenotazione autenticarsi al sito");
                         break;
 
+                    case 'dbError':
+                        callback(current_state, "Errore database");
+                        break;
+
                     default:
                         callback(result, "");
                         break;
                 }
             },
-            error: undefined
+            error: callback(current_state, "Errore")
         });
     }
 
@@ -82,13 +86,22 @@ class MapModel {
                         callback('Sessione scaduta');
                         break;
 
+                    case 'dbError':
+                        callback('Errore database');
+                        break;
+
                     default:
                         let not_purchased_seats = JSON.parse(result);
                         if (not_purchased_seats.length !== 0) {
                             let msg = 'Non è stato possibile acquistare i posti ';
                             for (let i = 0; i < not_purchased_seats.length; i++) {
-                                msg.concat(not_purchased_seats[i]);
+                                msg += not_purchased_seats[i];
                             }
+                            $("button").prop("disabled", true);
+                            callback(msg);
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1500);
                         } else {
                             $("button").prop("disabled", true);
                             setTimeout(function () {
@@ -101,7 +114,7 @@ class MapModel {
                 }
 
             },
-            error: undefined
+            error: callback("Errore")
         });
     }
 

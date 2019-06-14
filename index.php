@@ -6,9 +6,6 @@ session_start();
 include "src/php/common.php";
 include "src/php/auth.php";
 
-$_SESSION['user'] = 'u1@p.it';
-$_SESSION['time'] = time();
-
 if (isset($_SESSION['user'])) {
     httpsRedirect();
 }
@@ -76,7 +73,7 @@ $timeout = checkTime();
                             break;
 
                         case LOGOUT_ERROR:
-                            echo 'Errore';
+                            echo 'Errore logout';
                             break;
 
                         default:

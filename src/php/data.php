@@ -15,7 +15,8 @@ if(!empty($_GET)) {
 
         switch ($action) {
             case 'initDB':
-                echo db_init();
+//                echo db_init(); // automatic reset
+                echo DB_OK;
                 break;
 
             case 'getDims':
@@ -24,13 +25,17 @@ if(!empty($_GET)) {
                 break;
 
             case 'getSeats':
-                echo json_encode(db_get_seats());
+                $seats = db_get_seats();
+                if (count($seats)!==0) echo json_encode($seats);
+                else echo DB_ERROR;
                 break;
 
             case 'getSeatState':
                 if (isset($_GET['id'])) {
                     $id = $_GET['id'];
-                    echo db_get_seat_state($id);
+                    $state = db_get_seat_state($id);
+                    if ($state !== null && $state !== DB_ERROR) echo $state;
+                    else echo DB_ERROR;
                 };
                 break;
 
