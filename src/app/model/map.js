@@ -4,11 +4,6 @@ function MapModel() {
             $.ajax({
                 url: 'src/php/data.php',
                 type: 'GET',
-                data: {action: 'initDB'}
-            }),
-            $.ajax({
-                url: 'src/php/data.php',
-                type: 'GET',
                 data: {action: 'getDims'}
             }),
             $.ajax({
@@ -21,10 +16,10 @@ function MapModel() {
                 type: 'GET',
                 data: {action: 'getUser'}
             })
-        ).done(function (res1, res2, res3, res4) {
-            var dims = JSON.parse(res2[0]);
-            var seats = JSON.parse(res3[0]);
-            var user = res4[0];
+        ).done(function (res1, res2, res3) {
+            var dims = JSON.parse(res1[0]);
+            var seats = JSON.parse(res2[0]);
+            var user = res3[0];
             callback({N: dims[0], M: dims[1], seats: seats, user: user});
         });
 

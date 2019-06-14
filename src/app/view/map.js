@@ -22,7 +22,7 @@ function MapView() {
                 var button = document.createElement('button');
 
 
-                var id = (i+1).toString()+String.fromCharCode("A".charCodeAt(0)+j);
+                var id = String.fromCharCode("A".charCodeAt(0)+j)+(i+1).toString();
                 button.innerHTML = id;
                 button.addEventListener('click', listener);
                 button.setAttribute('id', id);
