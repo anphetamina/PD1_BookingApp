@@ -108,6 +108,28 @@ function db_delete_booking($id, $connection) {
     return $result;
 }
 
+function db_delete_booking_by_user($id, $user, $connection) {
+    $query = "delete from seat where seat_id = ? and user = ?";
+    $result = false;
+    if($stmt = $connection->prepare($query)) {
+        $stmt->bind_param("ss", $id, $user);
+        try {
+            if(!$result = $stmt->execute())
+                throw new Exception('db_update_booking failed');
+            if ($stmt->affected_rows === 0) $result = false; // double check
+            $stmt->close();
+        } catch (Exception $exception) {
+            $connection->rollback();
+            $connection->autocommit(true);
+            if($stmt!=null) $stmt->close();
+            $connection->close();
+            echo DB_ERROR;
+        }
+    }
+
+    return $result;
+}
+
 function db_get_vars() {
 
     $connection = db_get_connection();
@@ -163,9 +185,9 @@ function db_get_seats() {
 function db_get_count_booked_seat_by_user($id, $user, $connection) {
 
     $count = 0;
-    $query = "select count(*) from seat where user = ? and state='booked' and seat_id = ? for update";
+    $query = "select count(*) from seat where (seat_id = ? and user = ?) and (state = 'booked' or state = 'bought') for update";
     if($stmt = $connection->prepare($query)) {
-        $stmt->bind_param("ss", $user, $id);
+        $stmt->bind_param("ss", $id, $user);
         try {
             if(!$stmt->execute())
                 throw new Exception('db_get_count_booked_seat_by_user failed');
@@ -185,7 +207,7 @@ function db_get_count_booked_seat_by_user($id, $user, $connection) {
 
 function db_get_seat_state($id) {
 
-    /*$connection = db_get_connection();
+    $connection = db_get_connection();
     $query = "select state from seat where seat_id = ? for update";
     $state = null;
     if($stmt = $connection->prepare($query)) {
@@ -206,7 +228,7 @@ function db_get_seat_state($id) {
 
     $connection->commit();
     $connection->close();
-    return $state;*/
+    return $state;
 }
 
 function db_get_seat_state_by_user($id, $user) {

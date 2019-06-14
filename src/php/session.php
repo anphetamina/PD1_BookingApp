@@ -28,7 +28,7 @@ function checkTime() {
     if (isset($_SESSION['time']) && isset($_SESSION['user'])) {
         $diff = time() - $_SESSION['time'];
 
-        if($diff > 2*60) { // minutes
+        if($diff > 10*60) { // minutes
 
             if(destroySession()) {
                 return true;

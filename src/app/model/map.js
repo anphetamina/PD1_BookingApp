@@ -70,8 +70,8 @@ class MapModel {
                             if (current_state === 'selected') callback(new_state, "Prenotazione per il posto " + id + " cancellata");
                             else callback(new_state, "Posto " + id + " già prenotato");
                         } else if (new_state === 'selected') {
-                            if (current_state === 'free') callback(new_state, "Posto " + id + " prenotato");
-                            else callback(new_state, "Prenotazione riconfermata");
+                            if (current_state === 'free' || current_state === 'booked') callback(new_state, "Posto " + id + " prenotato");
+                            else callback(new_state, "Prenotazione per il posto " + id + " riconfermata");
                         }
 
                         break;

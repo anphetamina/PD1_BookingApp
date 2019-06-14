@@ -18,7 +18,7 @@ if (!empty($_POST)) {
         switch ($action) {
             case 'updateSeat':
                 if (isset($_POST['id']) && isset($_POST['current_state'])) {
-                    $id = $_POST['id']; // todo verify id
+                    $id = $_POST['id'];
                     $current_state = $_POST['current_state'];
                     echo selectSeat($id, $current_state, $user);
                 }
@@ -110,78 +110,6 @@ function selectSeat($id, $current_state, $user) {
     $connection->commit();
     $connection->close();
     return $state;
-
-
-    /*$connection = db_get_connection();
-
-    $seat = db_get_seat($id);
-
-
-    if ($seat['state'] === 'bought') $state = 'bought';
-    elseif ($current_state === 'selected' && $seat['user'] !== $user && $seat['state'] === 'booked') $state = 'booked';
-    elseif ($seat['state'] === 'booked' && $seat['user'] !== $user) {
-
-        $query = "update seat set user = ? where seat_id = ?";
-
-        if($stmt = $connection->prepare($query)) {
-            $stmt->bind_param("ss", $user, $id);
-            try {
-                if(!$stmt->execute())
-                    throw new Exception('selectSeat failed');
-                $stmt->close();
-            } catch (Exception $exception) {
-                $connection->autocommit(true);
-                if($stmt!=null) $stmt->close();
-                $connection->close();
-                echo 'Error';
-            }
-        }
-
-        $state = 'selected';
-    }
-    elseif ($seat['state'] === 'booked' && $seat['user'] === $user) {
-        $state = 'free';
-        $query = "update seat set user = 'null', state = ? where seat_id = ?";
-
-        if($stmt = $connection->prepare($query)) {
-            $stmt->bind_param("ss", $state, $id);
-            try {
-                if(!$stmt->execute())
-                    throw new Exception('selectSeat failed');
-                $stmt->close();
-            } catch (Exception $exception) {
-                $connection->autocommit(true);
-                if($stmt!=null) $stmt->close();
-                $connection->close();
-                echo 'Error';
-            }
-        }
-    }
-    else {
-
-        $query = "update seat set user = ?, state = 'booked' where seat_id = ?";
-
-        if($stmt = $connection->prepare($query)) {
-            $stmt->bind_param("ss", $user, $id);
-            try {
-                if(!$stmt->execute())
-                    throw new Exception('selectSeat failed');
-                $stmt->close();
-            } catch (Exception $exception) {
-                $connection->autocommit(true);
-                if($stmt!=null) $stmt->close();
-                $connection->close();
-                echo 'Error';
-            }
-        }
-
-        $state = 'selected';
-    }
-
-
-    $connection->commit();
-    $connection->close();
-    return $state;*/
 }
 
 function buySeats($selected_seats, $user) {
@@ -209,65 +137,12 @@ function buySeats($selected_seats, $user) {
      * free them
      * */
     else {
-        foreach ($selected_seats as $seat => $id) {
-            db_delete_booking($id, $connection);
+        foreach ($seats as $seat => $id) {
+            db_delete_booking_by_user($id, $user, $connection);
         }
     }
 
     $connection->commit();
     $connection->close();
     return $seats;
-
-    /*$seats = array();
-    foreach ($selected_seats as $seat => $id) {
-        $count = db_get_count_booked_seat_by_user($id, $user);
-        if($count===0) $seats[] = $id;
-    }
-
-    $connection = db_get_connection();
-
-    if (count($seats)===0) {
-
-        $query = "update seat set state = 'bought' where user = ?";
-
-        if($stmt = $connection->prepare($query)) {
-            $stmt->bind_param("s", $user);
-            try {
-                if(!$stmt->execute())
-                    throw new Exception('bookSeats failed');
-                $stmt->close();
-            } catch (Exception $exception) {
-                $connection->autocommit(true);
-                if($stmt!=null) $stmt->close();
-//                $connection->close();
-                echo 'Error';
-            }
-        }
-
-    } else {
-
-
-        $query = "update seat set state = 'free', user = 'null' where user = ?";
-
-        if($stmt = $connection->prepare($query)) {
-            $stmt->bind_param("s", $user);
-            try {
-                if(!$stmt->execute())
-                    throw new Exception('bookSeats failed');
-                $stmt->close();
-            } catch (Exception $exception) {
-                $connection->autocommit(true);
-                if($stmt!=null) $stmt->close();
-//                $connection->close();
-                echo 'Error';
-            }
-        }
-
-
-    }
-
-    $connection->commit();
-    $connection->close();
-
-    return $seats;*/
 }
