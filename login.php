@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['cookie'])) {
-    header("Location: block.php");
+    header("Location: index.php");
 }
 
 
@@ -30,7 +30,7 @@ if (!empty($_POST)) {
                 if ($response === LOGIN_SUCCESS) {
                     $_SESSION['user'] = $username;
                     $_SESSION['time'] = time();
-                    redirect('home.php');
+                    redirect('index.php');
                 }
 
 
