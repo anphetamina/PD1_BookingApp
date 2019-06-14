@@ -23,24 +23,10 @@ if (!empty($_POST)) {
 
                 $response = login($username, $password);
 
-                switch ($response) {
-                    case LOGIN_SUCCESS:
-                        $_SESSION['user'] = $username;
-                        $_SESSION['time'] = time();
-                        redirect('index.php');
-                        break;
-
-                    case LOGIN_FAILED:
-                        redirect('login.php?msg=' . LOGIN_FAILED);
-                        break;
-
-                    case LOGIN_ERROR:
-                        redirect('login.php?msg=' . LOGIN_ERROR);
-                        break;
-
-                    default:
-
-                        break;
+                if ($response === LOGIN_SUCCESS) {
+                    $_SESSION['user'] = $username;
+                    $_SESSION['time'] = time();
+                    redirect('index.php');
                 }
 
 
@@ -88,26 +74,22 @@ if (!empty($_POST)) {
     <p id="p-msg">
         <?php
 
-        if (!empty($_GET)) {
-            if (isset($_GET['msg']) && !isset($_SESSION['user'])) {
-                $msg = $_GET['msg'];
+        if (isset($response) && !isset($_SESSION['user'])) {
+            switch ($response) {
+                case LOGIN_FAILED:
+                    echo 'Login fallito';
+                    break;
 
-                switch ($msg) {
+                case LOGIN_ERROR:
+                    echo 'Errore login';
+                    break;
 
-                    case LOGIN_FAILED:
-                        if ($response === LOGIN_FAILED) echo 'Login fallito';
-                        break;
+                default:
 
-                    case LOGIN_ERROR:
-                        if ($response === LOGIN_ERROR) echo 'Errore login';
-                        break;
-
-                    default:
-
-                        break;
-                }
+                    break;
             }
         }
+
         ?>
     </p>
 </div>

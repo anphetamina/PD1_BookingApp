@@ -42,8 +42,8 @@ class MapModel {
             url: 'src/php/booking.php',
             type: 'POST',
             data: {action: 'updateSeat', id: id, current_state: current_state},
-            success: function (result) {
-                switch (result) {
+            success: function (new_state) {
+                switch (new_state) {
                     case 'timeOut':
                         $("button").prop("disabled", true);
                         setTimeout(function () {
@@ -61,7 +61,16 @@ class MapModel {
                         break;
 
                     default:
-                        callback(result, "");
+                        if (new_state === 'bought') {
+                            if (current_state === 'bought') callback("Posto " + id + " già acquistato");
+                        } else if (new_state === 'free') {
+                            if (current_state === 'selected') callback("Posto " + id + " liberato");
+                            else callback("Posto " + id + " nuovamente liberato");
+                        } else if (new_state === 'booked') {
+                            if (current_state === 'selected') callback("Prenotazione per il posto " + id + " cancellata");
+                            else callback("Posto");
+                        }
+
                         break;
                 }
             }
@@ -92,9 +101,9 @@ class MapModel {
                     default:
                         let not_purchased_seats = JSON.parse(result);
                         if (not_purchased_seats.length !== 0) {
-                            let msg = 'Non è stato possibile acquistare i posti ';
+                            let msg = 'Non è stato possibile acquistare i posti';
                             for (let i = 0; i < not_purchased_seats.length; i++) {
-                                msg += not_purchased_seats[i];
+                                msg += ' '+not_purchased_seats[i];
                             }
                             $("button").prop("disabled", true);
                             callback(msg);

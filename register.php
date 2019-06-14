@@ -21,8 +21,6 @@ if (!empty($_POST)) {
                 $password2 = $_POST['password2'];
 
                 $response = register($username, $password1, $password2);
-
-                redirect('register.php?msg=' . $response);
             }
         }
     }
@@ -69,43 +67,41 @@ header
     <p id="p-msg">
         <?php
 
-        if (!empty($_GET)) {
-            if (isset($_GET['msg']) && !isset($_SESSION['user']) && isset($response)) {
-                $msg = $_GET['msg'];
-                switch ($msg) {
-                    case REGISTRATION_SUCCESS:
-                        if($response === REGISTRATION_SUCCESS) echo 'Registrazione avvenuta con successo';
-                        break;
+        if (isset($response) && !isset($_SESSION['user'])) {
+            switch ($response) {
+                case REGISTRATION_SUCCESS:
+                    echo 'Registrazione avvenuta con successo';
+                    break;
 
-                    case REGISTRATION_FAILED:
-                        if($response === REGISTRATION_FAILED) echo 'Registrazione fallita';
-                        break;
+                case REGISTRATION_FAILED:
+                    echo 'Registrazione fallita';
+                    break;
 
-                    case USERNAME_ALREADY_EXISTS:
-                        if($response === USERNAME_ALREADY_EXISTS) echo 'Username già esistente';
-                        break;
+                case USERNAME_ALREADY_EXISTS:
+                    echo 'Username già esistente';
+                    break;
 
-                    case USERNAME_NOT_VALID:
-                        if($response === USERNAME_NOT_VALID) echo 'Username non valido';
-                        break;
+                case USERNAME_NOT_VALID:
+                    echo 'Username non valido';
+                    break;
 
-                    case PASSWORD_NOT_VALID:
-                        if($response === PASSWORD_NOT_VALID) echo 'Password non valida';
-                        break;
+                case PASSWORD_NOT_VALID:
+                    echo 'Password non valida';
+                    break;
 
-                    case PASSWORD_NOT_EQUAL:
-                        if($response === PASSWORD_NOT_EQUAL) echo 'Le password non coincidono';
-                        break;
+                case PASSWORD_NOT_EQUAL:
+                    echo 'Le password non coincidono';
+                    break;
 
-                    case PASSWORD_NULL:
-                        if($response === PASSWORD_NULL) echo 'Password sbagliata';
-                        break;
+                case PASSWORD_NULL:
+                    echo 'Password sbagliata';
+                    break;
 
-                    default:
-                        // $msg = 'Messaggio non riconosciuto';
-                        break;
-                }
+                default:
+                    // $msg = 'Messaggio non riconosciuto';
+                    break;
             }
+
         }
 
         ?>

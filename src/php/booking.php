@@ -17,8 +17,8 @@ if (!empty($_POST)) {
 
         switch ($action) {
             case 'updateSeat':
-                if (isset($_POST['id']) && $_POST['current_state']) {
-                    $id = $_POST['id'];
+                if (isset($_POST['id']) && isset($_POST['current_state'])) {
+                    $id = $_POST['id']; // todo verify id
                     $current_state = $_POST['current_state'];
                     echo selectSeat($id, $current_state, $user);
                 }
@@ -70,16 +70,39 @@ function selectSeat($id, $current_state, $user) {
              * update the current booking
              * */
             if ($seat['user'] !== $user) {
-                if (db_update_booking($id, $user, $connection)) $state = 'selected';
-                else $state = DB_ERROR;
+
+                /*
+                 * the selected seat is displayed as selected (yellow)
+                 * cancel your booking
+                 * */
+                if ($current_state === 'selected') $state = 'booked';
+                /*
+                 * overwrite the booking
+                 * */
+                else {
+                    if (db_update_booking($id, $user, $connection)) $state = 'selected';
+                    else $state = DB_ERROR;
+                }
             }
             /*
              * the seat has been booked by the user
              * remove the booking
              * */
             else {
-                if (db_delete_booking($id, $connection)) $state = 'free';
-                else $state = DB_ERROR;
+                /*
+                 * the selected seat is displayed as free (green)
+                 * reconfirm the booking
+                 * */
+                if ($current_state === 'free') $state = 'selected';
+                /*
+                 * delete the booking
+                 * */
+                else {
+                    if (db_delete_booking($id, $connection)) $state = 'free';
+                    else $state = DB_ERROR;
+                }
+
+
             }
         }
     }
@@ -175,7 +198,7 @@ function buySeats($selected_seats, $user) {
      * all selected seats has been booked by the user
      * update them as bought
      * */
-    if (empty($count)) {
+    if (empty($seats)) {
         foreach ($selected_seats as $seat => $id) {
             db_buy_seat($id, $user, $connection);
         }

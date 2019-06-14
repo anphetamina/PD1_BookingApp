@@ -10,8 +10,6 @@ define('DB_OK', 'dbOk');
 define('DB_ERROR', 'dbError');
 define('NULL', 'null');
 
-db_book_seat('1A', 'u2@p.it', db_get_connection());
-
 function db_get_connection() {
     $connection = mysqli_connect(HOST, USER, PASS, DB);
     if (!$connection) {
