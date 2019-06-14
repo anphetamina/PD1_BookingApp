@@ -1,43 +1,38 @@
-class MapModel {
-
-    constructor() {}
-
-    init(callback) {
+function MapModel() {
+    MapModel.prototype.init = function (callback) {
         $.when(
             $.ajax({
                 url: 'src/php/data.php',
                 type: 'GET',
-                data: {action: 'initDB'},
+                data: {action: 'initDB'}
             }),
             $.ajax({
                 url: 'src/php/data.php',
                 type: 'GET',
-                data: {action: 'getDims'},
+                data: {action: 'getDims'}
             }),
             $.ajax({
                 url: 'src/php/data.php',
                 type: 'GET',
-                data: {action: 'getSeats'},
+                data: {action: 'getSeats'}
             }),
             $.ajax({
                 url: 'src/php/data.php',
                 type: 'GET',
-                data: {action: 'getUser'},
-            }),
+                data: {action: 'getUser'}
+            })
         ).done(function (res1, res2, res3, res4) {
-            let dims = JSON.parse(res2[0]);
-            let seats = JSON.parse(res3[0]);
-            let user = res4[0];
+            var dims = JSON.parse(res2[0]);
+            var seats = JSON.parse(res3[0]);
+            var user = res4[0];
             callback({N: dims[0], M: dims[1], seats: seats, user: user});
         });
 
+    };
 
-    }
-
-
-    updateSeat(seat, callback) {
-        let id = seat['id'];
-        let current_state = seat['current_state'];
+    MapModel.prototype.updateSeat = function (seat, callback) {
+        var id = seat['id'];
+        var current_state = seat['current_state'];
         $.ajax({
             url: 'src/php/booking.php',
             type: 'POST',
@@ -78,14 +73,14 @@ class MapModel {
                 }
             }
         });
-    }
+    };
 
-    updateSeats(seats, callback) {
-        let selected_seats = {};
-        for (let i = 0; i < seats.length; i++) {
+    MapModel.prototype.updateSeats = function (seats, callback) {
+        var selected_seats = {};
+        for (var i = 0; i < seats.length; i++) {
             selected_seats[i] = seats[i].id;
         }
-        let json_seats = JSON.stringify(selected_seats);
+        var json_seats = JSON.stringify(selected_seats);
         $.ajax({
             url: 'src/php/booking.php',
             type: 'POST',
@@ -102,10 +97,10 @@ class MapModel {
                         break;
 
                     default:
-                        let not_purchased_seats = JSON.parse(result);
+                        var not_purchased_seats = JSON.parse(result);
                         if (not_purchased_seats.length !== 0) {
-                            let msg = 'Non è stato possibile acquistare i posti';
-                            for (let i = 0; i < not_purchased_seats.length; i++) {
+                            var msg = 'Non è stato possibile acquistare i posti';
+                            for (var i = 0; i < not_purchased_seats.length; i++) {
                                 msg += ' '+not_purchased_seats[i];
                             }
                             $("button").prop("disabled", true);
@@ -126,8 +121,5 @@ class MapModel {
 
             }
         });
-    }
-
-
-
+    };
 }

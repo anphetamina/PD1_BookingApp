@@ -10,8 +10,6 @@ if (isset($_SESSION['user'])) {
     httpsRedirect();
 }
 
-
-
 $timeout = checkTime();
 
 
@@ -21,6 +19,7 @@ $timeout = checkTime();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
     <title>s264014_BookingApp</title>
     <link rel="stylesheet" href="src/css/style.css"/>
     <script src="lib/jquery-3.4.1.min.js"></script>
