@@ -62,13 +62,16 @@ class MapModel {
 
                     default:
                         if (new_state === 'bought') {
-                            if (current_state === 'bought') callback("Posto " + id + " già acquistato");
+                            callback(new_state, "Posto " + id + " già acquistato");
                         } else if (new_state === 'free') {
-                            if (current_state === 'selected') callback("Posto " + id + " liberato");
-                            else callback("Posto " + id + " nuovamente liberato");
+                            if (current_state === 'selected') callback(new_state, "Posto " + id + " liberato");
+                            else callback(new_state, "Posto " + id + " nuovamente liberato");
                         } else if (new_state === 'booked') {
-                            if (current_state === 'selected') callback("Prenotazione per il posto " + id + " cancellata");
-                            else callback("Posto");
+                            if (current_state === 'selected') callback(new_state, "Prenotazione per il posto " + id + " cancellata");
+                            else callback(new_state, "Posto " + id + " già prenotato");
+                        } else if (new_state === 'selected') {
+                            if (current_state === 'free') callback(new_state, "Posto " + id + " prenotato");
+                            else callback(new_state, "Prenotazione riconfermata");
                         }
 
                         break;
