@@ -109,7 +109,7 @@ function db_delete_booking($id, $connection) {
 }
 
 function db_delete_booking_by_user($id, $user, $connection) {
-    $query = "delete from seat where seat_id = ? and user = ?";
+    $query = "delete from seat where seat_id = ? and user = ? and state = 'booked'";
     $result = false;
     if($stmt = $connection->prepare($query)) {
         $stmt->bind_param("ss", $id, $user);

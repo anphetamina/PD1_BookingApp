@@ -137,7 +137,7 @@ function buySeats($selected_seats, $user) {
      * free them
      * */
     else {
-        foreach ($seats as $seat => $id) {
+        foreach ($selected_seats as $seat => $id) {
             db_delete_booking_by_user($id, $user, $connection);
         }
     }
