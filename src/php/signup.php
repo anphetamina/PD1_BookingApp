@@ -26,8 +26,6 @@ function checkUser($username) {
             if($count>0) $result = true; // already exists
             $stmt->close();
         } catch (Exception $exception) {
-            /*$connection->rollback();
-            print 'Rollback ' . $exception->getMessage();*/
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();

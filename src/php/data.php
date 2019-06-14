@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['cookie'])) {
-    header("Location: block.php");
+    header("Location: index.php");
 }
 
 include "common.php";

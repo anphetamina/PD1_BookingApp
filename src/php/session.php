@@ -8,10 +8,6 @@ define('TIMEOUT', 'timeOut');
 define('TIMEOUT_ERROR', 'timeOutError');
 define('NOT_LOGGED_IN', 'notAuthenticated');
 
-function testCookie() {
-
-}
-
 function destroySession() {
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();

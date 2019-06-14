@@ -29,8 +29,6 @@ function login($user, $psw) {
             $result = password_verify($psw, $hash);
             $stmt->close();
         } catch (Exception $exception) {
-            /*$connection->rollback();
-            print 'Rollback ' . $exception->getMessage();*/
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
