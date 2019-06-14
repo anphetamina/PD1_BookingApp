@@ -22,17 +22,28 @@ class MapView {
             for (let j = 0; j < M; j++) {
                 let cell = row.insertCell(j);
                 let button = document.createElement('button');
-                cell.append(button);
+
+
                 let id = (i+1).toString()+String.fromCharCode("A".charCodeAt(0)+j);
                 button.innerHTML = id;
                 button.addEventListener('click', listener);
-                let state = seats[id].state;
                 button.setAttribute('id', id);
-                /*button.setAttribute('name', id);
-                button.setAttribute('value', id);*/
-                if (state === 'booked' && seats[id].user === user) state = 'selected';
+
+                let state = 'free';
+                /*
+                * the seat has been booked or bought
+                * */
+                if (seats[id] !== undefined) {
+                    state = seats[id].state;
+                    
+                    if (state === 'booked' && seats[id].user === user) state = 'selected';
+                }
+                
+                
                 button.setAttribute('class', state);
                 button.setAttribute('type', 'button');
+
+                cell.append(button);
             }
         }
     }

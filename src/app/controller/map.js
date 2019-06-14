@@ -11,8 +11,6 @@ class MapController {
 
             _this.view.printMap(data, function (event) {
                 _this.selectSeat(_this.view.getSeat(event.target));
-
-
             });
 
             if (data['user'] !== 'null')

@@ -64,8 +64,7 @@ class MapModel {
                         callback(result, "");
                         break;
                 }
-            },
-            error: callback(current_state, "Errore")
+            }
         });
     }
 
@@ -113,8 +112,7 @@ class MapModel {
 
                 }
 
-            },
-            error: callback("Errore")
+            }
         });
     }
 

@@ -26,18 +26,17 @@ if(!empty($_GET)) {
 
             case 'getSeats':
                 $seats = db_get_seats();
-                if (count($seats)!==0) echo json_encode($seats);
-                else echo DB_ERROR;
+                echo json_encode($seats);
                 break;
 
-            case 'getSeatState':
+            /*case 'getSeatState':
                 if (isset($_GET['id'])) {
                     $id = $_GET['id'];
                     $state = db_get_seat_state($id);
                     if ($state !== null && $state !== DB_ERROR) echo $state;
                     else echo DB_ERROR;
                 };
-                break;
+                break;*/
 
             case 'getUser':
                 if (isset($_SESSION['user'])) {
