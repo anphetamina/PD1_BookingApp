@@ -13,7 +13,8 @@ define('NULL', 'null');
 function db_get_connection() {
     $connection = mysqli_connect(HOST, USER, PASS, DB);
     if (!$connection) {
-        print 'Connection error '.mysqli_errno().' '.mysqli_connect_error();
+        /*print 'Connection error '.mysqli_errno().' '.mysqli_connect_error();*/
+        echo DB_ERROR;
     }
     $connection->autocommit(false);
     return $connection;
