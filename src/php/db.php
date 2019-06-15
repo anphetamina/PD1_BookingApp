@@ -228,8 +228,8 @@ function db_get_seat($id, $connection) {
 function db_get_seats() {
 
     $connection = db_get_connection();
-    if (!$connection) {
-        return false;
+    if ($connection === DB_ERROR) {
+        return DB_ERROR;
     } else {
         $query = "select seat_id, state, user from seat for update";
         $seats = array();

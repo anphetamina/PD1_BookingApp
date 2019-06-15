@@ -2,7 +2,7 @@ function MapModel() {
 
     // todo contatori
     // todo sanificare input php
-    // todo rivedere path timeout
+
     MapModel.prototype.init = function (callback) {
         $.when(
             $.ajax({

@@ -32,7 +32,7 @@ if(!empty($_GET)) {
 
             case 'getSeats':
                 $seats = db_get_seats();
-                if (!$seats) {
+                if ($seats === DB_ERROR) {
                     echo DB_ERROR;
                 } else
                     echo json_encode($seats);
