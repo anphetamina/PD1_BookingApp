@@ -39,7 +39,7 @@ function checkUser($username, $connection) {
 function register($user, $psw1, $psw2) {
 
     $connection = db_get_connection();
-    if (!$connection) {
+    if ($connection === DB_ERROR) {
         return DB_ERROR;
     } else {
         if ($psw1!=$psw2) return PASSWORD_NOT_EQUAL;

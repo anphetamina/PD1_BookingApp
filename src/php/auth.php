@@ -17,7 +17,7 @@ function login($user, $psw) {
     if (!checkEmail($user)) return USERNAME_NOT_VALID;
 
     $connection = db_get_connection();
-    if (!$connection) {
+    if ($connection === DB_ERROR) {
         return LOGIN_ERROR;
     } else {
         $result = false;

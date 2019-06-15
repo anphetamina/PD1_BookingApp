@@ -34,7 +34,8 @@ if (!empty($_POST)) {
                     $not_purchased_seats = array();
                     if (!empty($selected_seats)) {
                         $not_purchased_seats = buySeats($selected_seats, $user);
-                        echo json_encode($not_purchased_seats);
+                        if ($not_purchased_seats === DB_ERROR) echo DB_ERROR;
+                        else echo json_encode($not_purchased_seats);
                     } else echo NOT_LOGGED_IN; // double check
 
 
@@ -51,14 +52,13 @@ if (!empty($_POST)) {
 
 function selectSeat($id, $current_state, $user) {
 
-
     $connection = db_get_connection();
-    if (!$connection) {
+    if ($connection === DB_ERROR) {
         return DB_ERROR;
     } else {
         $seat = db_get_seat($id, $connection);
 
-        if (!$seat) {
+        if ($seat === DB_ERROR) {
             return DB_ERROR;
         } else {
             /*
@@ -130,7 +130,7 @@ function buySeats($selected_seats, $user) {
 
     $connection = db_get_connection();
 
-    if (!$connection) {
+    if ($connection === DB_ERROR) {
         return DB_ERROR;
     } else {
         $seats = array();
@@ -139,8 +139,8 @@ function buySeats($selected_seats, $user) {
          * */
         foreach ($selected_seats as $seat => $id) {
             $count = db_get_count_booked_or_bought_seat_by_other_users($id, $user, $connection);
-            if (!$count) return DB_ERROR;
-            elseif($count!==0) $seats[] = $id;
+            if ($count === DB_ERROR) return DB_ERROR;
+            elseif($count>0) $seats[] = $id;
         }
 
         /*
@@ -154,10 +154,10 @@ function buySeats($selected_seats, $user) {
                  * else an insert should be made
                  * */
                 $count = db_update_booked_seat($id, $user, $connection);
-                if (!$count) return DB_ERROR;
+                if ($count === DB_ERROR) return DB_ERROR;
                 elseif ($count === 0) {
                     $result = db_insert_bought_seat($id, $user, $connection);
-                    if (!$result) return DB_ERROR;
+                    if ($result === DB_ERROR) return DB_ERROR;
                 }
             }
 
@@ -169,7 +169,7 @@ function buySeats($selected_seats, $user) {
         else {
             foreach ($selected_seats as $seat => $id) {
                 $result = db_delete_booking_by_user($id, $user, $connection);
-                if (!$result) return DB_ERROR;
+                if ($result === DB_ERROR) return DB_ERROR;
             }
         }
 

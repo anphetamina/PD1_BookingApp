@@ -14,7 +14,7 @@ function db_get_connection() {
 
     $connection = mysqli_connect(HOST, USER, PASS, DB);
     if (!$connection) {
-        return false;
+        return DB_ERROR;
     }
     $connection->autocommit(false);
     return $connection;
@@ -34,7 +34,7 @@ function db_book_seat($id, $user, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return false;
+            return DB_ERROR;
         }
     }
 
@@ -57,7 +57,7 @@ function db_update_booked_seat($id, $user, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return false;
+            return DB_ERROR;
         }
     }
 
@@ -79,7 +79,7 @@ function db_insert_bought_seat($id, $user, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return false;
+            return DB_ERROR;
         }
     }
 
@@ -102,7 +102,7 @@ function db_update_booking($id, $user, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return false;
+            return DB_ERROR;
         }
     }
 
@@ -124,7 +124,7 @@ function db_delete_booking($id, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return false;
+            return DB_ERROR;
         }
     }
 
@@ -146,7 +146,7 @@ function db_delete_booking_by_user($id, $user, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return false;
+            return DB_ERROR;
         }
     }
 
@@ -169,7 +169,7 @@ function db_get_count_booked_or_bought_seat_by_other_users($id, $user, $connecti
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return false;
+            return DB_ERROR;
         }
     }
 
@@ -192,7 +192,7 @@ function db_get_seat($id, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return false;
+            return DB_ERROR;
         }
     }
 
