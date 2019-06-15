@@ -96,6 +96,13 @@ function MapModel() {
                         callback('Errore database');
                         break;
 
+                    /*
+                    * redundant
+                    * */
+                    case 'notAuthenticated':
+                        callback("Per effettuare una prenotazione autenticarsi al sito");
+                        break;
+
                     default:
                         var not_purchased_seats = JSON.parse(result);
                         if (not_purchased_seats.length !== 0) {

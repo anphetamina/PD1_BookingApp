@@ -57,7 +57,7 @@ function db_update_booked_seat($id, $user, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return false;
         }
     }
 
@@ -79,7 +79,7 @@ function db_insert_bought_seat($id, $user, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return false;
         }
     }
 
@@ -146,7 +146,7 @@ function db_delete_booking_by_user($id, $user, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return false;
         }
     }
 
@@ -169,7 +169,7 @@ function db_get_count_booked_or_bought_seat_by_other_users($id, $user, $connecti
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return false;
         }
     }
 

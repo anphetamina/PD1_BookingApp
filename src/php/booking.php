@@ -34,9 +34,8 @@ if (!empty($_POST)) {
                     $not_purchased_seats = array();
                     if (!empty($selected_seats)) {
                         $not_purchased_seats = buySeats($selected_seats, $user);
-                        if (count($not_purchased_seats)===0) echo DB_ERROR;
-                        else echo json_encode($not_purchased_seats);
-                    } else echo DB_ERROR;
+                        echo json_encode($not_purchased_seats);
+                    } else echo NOT_LOGGED_IN; // double check
 
 
                 }
@@ -131,40 +130,53 @@ function buySeats($selected_seats, $user) {
 
     $connection = db_get_connection();
 
-    $seats = array();
-    /*
-     * check if any of the selected seat has been booked or bought by other users
-     * */
-    foreach ($selected_seats as $seat => $id) {
-        $count = db_get_count_booked_or_bought_seat_by_other_users($id, $user, $connection);
-        if($count!==0) $seats[] = $id;
-    }
-
-    /*
-     * all selected seats has not been booked or bought by other users
-     * update them as bought
-     * */
-    if (empty($seats)) {
+    if (!$connection) {
+        return DB_ERROR;
+    } else {
+        $seats = array();
+        /*
+         * check if any of the selected seat has been booked or bought by other users
+         * */
         foreach ($selected_seats as $seat => $id) {
-            $count = db_update_booked_seat($id, $user, $connection);
-            if ($count === 0) {
-                db_insert_bought_seat($id, $user, $connection);
+            $count = db_get_count_booked_or_bought_seat_by_other_users($id, $user, $connection);
+            if (!$count) return DB_ERROR;
+            elseif($count!==0) $seats[] = $id;
+        }
 
+        /*
+         * all selected seats has not been booked or bought by other users
+         * update them as bought
+         * */
+        if (empty($seats)) {
+            foreach ($selected_seats as $seat => $id) {
+                /*
+                 * if there has been a tuple update do nothing
+                 * else an insert should be made
+                 * */
+                $count = db_update_booked_seat($id, $user, $connection);
+                if (!$count) return DB_ERROR;
+                elseif ($count === 0) {
+                    $result = db_insert_bought_seat($id, $user, $connection);
+                    if (!$result) return DB_ERROR;
+                }
+            }
+
+        }
+        /*
+         * one or more displayed selected seat has been booked or bought by other users
+         * delete all the selected seats from the user bookings
+         * */
+        else {
+            foreach ($selected_seats as $seat => $id) {
+                $result = db_delete_booking_by_user($id, $user, $connection);
+                if (!$result) return DB_ERROR;
             }
         }
 
-    }
-    /*
-     * one or more displayed selected seat has been booked or bought by other users
-     * delete all the selected seats from the user bookings
-     * */
-    else {
-        foreach ($selected_seats as $seat => $id) {
-            db_delete_booking_by_user($id, $user, $connection);
-        }
+        $connection->commit();
+        $connection->close();
+        return $seats;
     }
 
-    $connection->commit();
-    $connection->close();
-    return $seats;
+
 }
