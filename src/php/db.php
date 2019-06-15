@@ -34,7 +34,7 @@ function db_book_seat($id, $user, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return false;
         }
     }
 
@@ -102,7 +102,7 @@ function db_update_booking($id, $user, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return false;
         }
     }
 
@@ -124,7 +124,7 @@ function db_delete_booking($id, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return false;
         }
     }
 
@@ -192,7 +192,7 @@ function db_get_seat($id, $connection) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return DB_ERROR;
+            return false;
         }
     }
 

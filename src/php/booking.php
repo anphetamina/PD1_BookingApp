@@ -54,67 +54,77 @@ function selectSeat($id, $current_state, $user) {
 
 
     $connection = db_get_connection();
-
-
-    $seat = db_get_seat($id, $connection);
-
-    /*
-     * the seat is free so it can be booked by the user
-     * */
-    if (empty($seat)) {
-        if (db_book_seat($id, $user, $connection)) $state = 'selected';
-        else $state = DB_ERROR;
+    if (!$connection) {
+        return DB_ERROR;
     } else {
-        /*
-         * the seat has already been booked or bought
+        $seat = db_get_seat($id, $connection);
+
+        if (!$seat) {
+            return DB_ERROR;
+        } else {
+            /*
+         * the seat is free so it can be booked by the user
          * */
-        if ($seat['state'] === 'bought') $state = 'bought';
-        else {
-            /*
-             * the seat has been booked by another user
-             * update the current booking
-             * */
-            if ($seat['user'] !== $user) {
-
+            if (empty($seat)) {
+                if (db_book_seat($id, $user, $connection)) $state = 'selected';
+                else return DB_ERROR;
+            } else {
                 /*
-                 * the selected seat is displayed as selected (yellow)
-                 * cancel your booking
+                 * the seat has already been booked or bought
                  * */
-                if ($current_state === 'selected') $state = 'booked';
-                /*
-                 * overwrite the booking
-                 * */
+                if ($seat['state'] === 'bought') $state = 'bought';
                 else {
-                    if (db_update_booking($id, $user, $connection)) $state = 'selected';
-                    else $state = DB_ERROR;
+                    /*
+                     * the seat has been booked by another user
+                     * update the current booking
+                     * */
+                    if ($seat['user'] !== $user) {
+
+                        /*
+                         * the selected seat is displayed as selected (yellow)
+                         * cancel your booking
+                         * */
+                        if ($current_state === 'selected') $state = 'booked';
+                        /*
+                         * overwrite the booking
+                         * */
+                        else {
+                            if (db_update_booking($id, $user, $connection)) $state = 'selected';
+                            else return DB_ERROR;
+                        }
+                    }
+                    /*
+                     * the seat has been booked by the user
+                     * remove the booking
+                     * */
+                    else {
+                        /*
+                         * the selected seat is displayed as free (green)
+                         * reconfirm the booking
+                         * */
+                        if ($current_state === 'free') $state = 'selected';
+                        /*
+                         * delete the booking
+                         * */
+                        else {
+                            if (db_delete_booking($id, $connection)) $state = 'free';
+                            else return DB_ERROR;
+                        }
+
+
+                    }
                 }
             }
-            /*
-             * the seat has been booked by the user
-             * remove the booking
-             * */
-            else {
-                /*
-                 * the selected seat is displayed as free (green)
-                 * reconfirm the booking
-                 * */
-                if ($current_state === 'free') $state = 'selected';
-                /*
-                 * delete the booking
-                 * */
-                else {
-                    if (db_delete_booking($id, $connection)) $state = 'free';
-                    else $state = DB_ERROR;
-                }
 
-
-            }
+            $connection->commit();
+            $connection->close();
+            return $state;
         }
+
     }
 
-    $connection->commit();
-    $connection->close();
-    return $state;
+
+
 }
 
 function buySeats($selected_seats, $user) {

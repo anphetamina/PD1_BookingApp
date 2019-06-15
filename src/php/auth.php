@@ -18,7 +18,7 @@ function login($user, $psw) {
 
     $connection = db_get_connection();
     if (!$connection) {
-        return false;
+        return LOGIN_ERROR;
     } else {
         $result = false;
         $query = "select password from user where username=? for update";
