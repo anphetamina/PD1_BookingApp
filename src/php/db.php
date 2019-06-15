@@ -41,6 +41,29 @@ function db_book_seat($id, $user, $connection) {
     return $result;
 }
 
+function db_check_seat_state_by_user($id, $user, $connection) {
+    $query = "select state from seat where seat_id = ? and user = ?";
+    $state = null;
+    if($stmt = $connection->prepare($query)) {
+        $stmt->bind_param("ss", $id, $user);
+        try {
+            if(!$result = $stmt->execute())
+                throw new Exception();
+            $stmt->bind_result($state);
+            $stmt->fetch();
+            $stmt->close();
+        } catch (Exception $exception) {
+            $connection->rollback();
+            $connection->autocommit(true);
+            if($stmt!=null) $stmt->close();
+            $connection->close();
+            return DB_ERROR;
+        }
+    }
+
+    return $state;
+}
+
 function db_update_booked_seat($id, $user, $connection) {
 
     $query = "update seat set state = 'bought' where seat_id = ? and user = ?";

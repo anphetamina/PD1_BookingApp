@@ -150,15 +150,28 @@ function buySeats($selected_seats, $user) {
         if (empty($seats)) {
             foreach ($selected_seats as $seat => $id) {
                 /*
-                 * if there has been a tuple update do nothing
-                 * else an insert should be made
+                 * check the seat state
                  * */
-                $count = db_update_booked_seat($id, $user, $connection);
-                if ($count === DB_ERROR) return DB_ERROR;
-                elseif ($count === 0) {
+                $state = db_check_seat_state_by_user($id, $user, $connection);
+                if ($state === DB_ERROR) return DB_ERROR;
+                /*
+                 * insert the bought seat
+                 * */
+                elseif ($state === null) {
                     $result = db_insert_bought_seat($id, $user, $connection);
                     if ($result === DB_ERROR) return DB_ERROR;
                 }
+                /*
+                 * update the booked seat
+                 * */
+                elseif ($state === 'booked') {
+                    $result = db_update_booked_seat($id, $user, $connection);
+                    if ($result === DB_ERROR) return DB_ERROR;
+                }
+                /*
+                 * the seat has been already been bought by the user
+                 * */
+                else null;
             }
 
         }
