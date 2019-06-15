@@ -17,29 +17,34 @@ function login($user, $psw) {
     if (!checkEmail($user)) return USERNAME_NOT_VALID;
 
     $connection = db_get_connection();
-    $result = false;
-    $query = "select password from user where username=? for update";
-    if($stmt = $connection->prepare($query)) {
-        $stmt->bind_param('s', $user);
-        try {
-            if(!$stmt->execute())
-                throw new Exception('login failed');
-            $stmt->bind_result($hash);
-            $stmt->fetch();
-            $result = password_verify($psw, $hash);
-            $stmt->close();
-        } catch (Exception $exception) {
-            $connection->autocommit(true);
-            if($stmt!=null) $stmt->close();
-            $connection->close();
-            return LOGIN_ERROR;
+    if (!$connection) {
+        return false;
+    } else {
+        $result = false;
+        $query = "select password from user where username=? for update";
+        if($stmt = $connection->prepare($query)) {
+            $stmt->bind_param('s', $user);
+            try {
+                if(!$stmt->execute())
+                    throw new Exception('login failed');
+                $stmt->bind_result($hash);
+                $stmt->fetch();
+                $result = password_verify($psw, $hash);
+                $stmt->close();
+            } catch (Exception $exception) {
+                $connection->autocommit(true);
+                if($stmt!=null) $stmt->close();
+                $connection->close();
+                return LOGIN_ERROR;
+            }
         }
+
+        $connection->commit();
+        $connection->close();
+
+        return ($result)? LOGIN_SUCCESS : LOGIN_FAILED;
     }
 
-    $connection->commit();
-    $connection->close();
-
-    return ($result)? LOGIN_SUCCESS : LOGIN_FAILED;
 }
 
 function logout() {

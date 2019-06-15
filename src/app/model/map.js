@@ -17,10 +17,15 @@ function MapModel() {
                 data: {action: 'getUser'}
             })
         ).done(function (res1, res2, res3) {
-            var dims = JSON.parse(res1[0]);
-            var seats = JSON.parse(res2[0]);
-            var user = res3[0];
-            callback({N: dims[0], M: dims[1], seats: seats, user: user});
+            if (res1[2].responseText === 'varNotValid' || res2[2].responseText === 'dbError') {
+                console.log("Data fetch failed");
+            } else {
+                var dims = JSON.parse(res1[0]);
+                var seats = JSON.parse(res2[0]);
+                var user = res3[0];
+                callback({N: dims[0], M: dims[1], seats: seats, user: user});
+            }
+
         });
 
     };
@@ -94,7 +99,8 @@ function MapModel() {
                     default:
                         var not_purchased_seats = JSON.parse(result);
                         if (not_purchased_seats.length !== 0) {
-                            var msg = 'Non è stato possibile acquistare i posti';
+                            var msg = 'Non è stato possibile acquistare ';
+                            (not_purchased_seats.length === 1) ? msg += 'il posto' : 'i posti';
                             for (var i = 0; i < not_purchased_seats.length; i++) {
                                 msg += ' '+not_purchased_seats[i];
                             }

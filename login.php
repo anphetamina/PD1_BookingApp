@@ -88,8 +88,11 @@ if (!empty($_POST)) {
                     echo 'Errore login';
                     break;
 
-                default:
+                case DB_ERROR:
+                    echo 'Errore database';
+                    break;
 
+                default:
                     break;
             }
         }

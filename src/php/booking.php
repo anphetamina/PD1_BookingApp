@@ -31,10 +31,11 @@ if (!empty($_POST)) {
             case 'buySeats':
                 if (isset($_POST['selected_seats'])) {
                     $selected_seats = json_decode($_POST['selected_seats']);
-                    $not_purchasable_seats = array();
+                    $not_purchased_seats = array();
                     if (!empty($selected_seats)) {
-                        $not_purchasable_seats = buySeats($selected_seats, $user);
-                        echo json_encode($not_purchasable_seats);
+                        $not_purchased_seats = buySeats($selected_seats, $user);
+                        if (count($not_purchased_seats)===0) echo DB_ERROR;
+                        else echo json_encode($not_purchased_seats);
                     } else echo DB_ERROR;
 
 
@@ -121,24 +122,31 @@ function buySeats($selected_seats, $user) {
     $connection = db_get_connection();
 
     $seats = array();
+    /*
+     * check if any of the selected seat has been booked or bought by other users
+     * */
     foreach ($selected_seats as $seat => $id) {
-        $count = db_get_count_booked_seat_by_user($id, $user, $connection);
-        if($count===0) $seats[] = $id;
+        $count = db_get_count_booked_or_bought_seat_by_other_users($id, $user, $connection);
+        if($count!==0) $seats[] = $id;
     }
 
     /*
-     * all selected seats has been booked by the user
+     * all selected seats has not been booked or bought by other users
      * update them as bought
      * */
     if (empty($seats)) {
         foreach ($selected_seats as $seat => $id) {
-            db_buy_seat($id, $user, $connection);
+            $count = db_update_booked_seat($id, $user, $connection);
+            if ($count === 0) {
+                db_insert_bought_seat($id, $user, $connection);
+
+            }
         }
 
     }
     /*
-     * one or more displayed selected seat has not been booked
-     * free them
+     * one or more displayed selected seat has been booked or bought by other users
+     * delete all the selected seats from the user bookings
      * */
     else {
         foreach ($selected_seats as $seat => $id) {

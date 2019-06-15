@@ -86,11 +86,11 @@ header
                     break;
 
                 case USERNAME_NOT_VALID:
-                    echo 'Username non valido';
+                    echo 'Inserire un\'email valida';
                     break;
 
                 case PASSWORD_NOT_VALID:
-                    echo 'Password non valida';
+                    echo 'La password deve contenere almeno un carattere minuscolo e un carattere maiuscolo o numero';
                     break;
 
                 case PASSWORD_NOT_EQUAL:
@@ -101,8 +101,12 @@ header
                     echo 'Password sbagliata';
                     break;
 
+                case DB_ERROR:
+                    echo 'Errore database';
+                    break;
+
                 default:
-                    // $msg = 'Messaggio non riconosciuto';
+
                     break;
             }
 

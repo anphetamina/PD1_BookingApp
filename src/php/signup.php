@@ -11,8 +11,8 @@ define('PASSWORD_NOT_VALID', -5);
 define('PASSWORD_NULL', -6);
 define('INPUT_NOT_VALID', -7);
 
-function checkUser($username) {
-    $connection = db_get_connection();
+function checkUser($username, $connection) {
+
     $result = false;
     $count = 0;
     $query = "select count(*) from user where username=? for update";
@@ -23,59 +23,65 @@ function checkUser($username) {
                 throw new Exception('checkUser failed');
             $stmt->bind_result($count);
             $stmt->fetch();
-            if($count>0) $result = true; // already exists
+            if($count===0) $result = true; // user does not exists
             $stmt->close();
         } catch (Exception $exception) {
             $connection->autocommit(true);
             if($stmt!=null) $stmt->close();
             $connection->close();
-            return false;
+            return DB_ERROR;
         }
     }
-
-    $connection->commit();
-    $connection->close();
 
     return $result;
 }
 
 function register($user, $psw1, $psw2) {
-    if ($psw1!=$psw2) return PASSWORD_NOT_EQUAL;
-    if (!checkPassword($psw1)) return PASSWORD_NOT_VALID;
-    if (checkUser($user)) return USERNAME_ALREADY_EXISTS;
-    if (!checkEmail($user)) return USERNAME_NOT_VALID;
 
     $connection = db_get_connection();
-    //$result = false;
-    $query = "insert into user (username, password) values (?, ?)";
-    if($stmt = $connection->prepare($query)) {
+    if (!$connection) {
+        return DB_ERROR;
+    } else {
+        if ($psw1!=$psw2) return PASSWORD_NOT_EQUAL;
+        if (!checkPassword($psw1)) return PASSWORD_NOT_VALID;
 
-        if (!$hash = password_hash($psw1, PASSWORD_DEFAULT)) {
-            $connection->close();
-            return PASSWORD_NULL;
+        $result = checkUser($user, $connection);
+        if ($result === DB_ERROR) {
+            return DB_ERROR;
+        } elseif (!$result) return USERNAME_ALREADY_EXISTS;
+
+        if (!checkEmail($user)) return USERNAME_NOT_VALID;
+
+        $query = "insert into user (username, password) values (?, ?)";
+        if($stmt = $connection->prepare($query)) {
+
+            if (!$hash = password_hash($psw1, PASSWORD_DEFAULT)) {
+                $connection->close();
+                return PASSWORD_NULL;
+            }
+
+            $stmt->bind_param('ss', $user, $hash);
+            try {
+                if(!$result = $stmt->execute())
+                    throw new Exception('register failed');
+                $stmt->close();
+            } catch (Exception $exception) {
+                $connection->rollback();
+                print 'Rollback ' . $exception->getMessage();
+                $connection->autocommit(true);
+                if($stmt!=null) $stmt->close();
+                $connection->close();
+                return REGISTRATION_FAILED;
+            }
         }
 
-        $stmt->bind_param('ss', $user, $hash);
-        try {
-            if(!$result = $stmt->execute())
-                throw new Exception('register failed');
-            /*$stmt->bind_result($result);
-            $stmt->fetch();*/
-            $stmt->close();
-        } catch (Exception $exception) {
-            $connection->rollback();
-            print 'Rollback ' . $exception->getMessage();
-            $connection->autocommit(true);
-            if($stmt!=null) $stmt->close();
-            $connection->close();
-            return REGISTRATION_FAILED;
-        }
+        $connection->commit();
+        $connection->close();
+
+        return REGISTRATION_SUCCESS;
     }
 
-    $connection->commit();
-    $connection->close();
 
-    return REGISTRATION_SUCCESS;
 }
 
 function checkEmail($username) {

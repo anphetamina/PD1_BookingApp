@@ -11,6 +11,8 @@ include "db.php";
 global $rows;
 global $columns;
 
+define('VAR_NOT_VALID', 'varNotValid');
+
 
 if(!empty($_GET)) {
     if (isset($_GET['action'])) {
@@ -20,13 +22,20 @@ if(!empty($_GET)) {
         switch ($action) {
 
             case 'getDims':
-                $dim = array($rows, $columns);
-                echo json_encode($dim);
+                if ($rows !== 0 && $columns !== 0) {
+                    $dim = array($rows, $columns);
+                    echo json_encode($dim);
+                } else
+                    echo VAR_NOT_VALID;
+
                 break;
 
             case 'getSeats':
                 $seats = db_get_seats();
-                echo json_encode($seats);
+                if (!$seats) {
+                    echo DB_ERROR;
+                } else
+                    echo json_encode($seats);
                 break;
 
             case 'getUser':
