@@ -42,7 +42,7 @@ function db_book_seat($id, $user, $connection) {
 }
 
 function db_check_seat_state_by_user($id, $user, $connection) {
-    $query = "select state from seat where seat_id = ? and user = ?";
+    $query = "select state from seat where seat_id = ? and user = ? for update";
     $state = null;
     if($stmt = $connection->prepare($query)) {
         $stmt->bind_param("ss", $id, $user);

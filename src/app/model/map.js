@@ -1,7 +1,7 @@
 function MapModel() {
 
     // todo contatori
-    // todo sanificare input php
+    // todo sanificare input php strip_tags
 
     MapModel.prototype.init = function (callback) {
         $.when(
