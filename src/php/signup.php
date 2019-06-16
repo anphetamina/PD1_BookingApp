@@ -36,7 +36,7 @@ function checkUser($username, $connection) {
     return $result;
 }
 
-function register($user, $psw1, $psw2) {
+function registration($user, $psw1, $psw2) {
 
     $connection = db_get_connection();
     if ($connection === DB_ERROR) {
@@ -63,7 +63,7 @@ function register($user, $psw1, $psw2) {
             $stmt->bind_param('ss', $user, $hash);
             try {
                 if(!$result = $stmt->execute())
-                    throw new Exception('register failed');
+                    throw new Exception('registration failed');
                 $stmt->close();
             } catch (Exception $exception) {
                 $connection->rollback();

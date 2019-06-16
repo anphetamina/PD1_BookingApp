@@ -44,7 +44,7 @@ function loadMap() {
         map_controller.init();
 
     } else {
-        document.getElementById("p-msg").innerHTML = 'Per visualizzare la mappa dei posti occorre abilitare i cookie';
+        document.getElementById("response-msg").innerHTML = 'Per visualizzare la mappa dei posti occorre abilitare i cookie';
     }
 }
 
@@ -58,10 +58,10 @@ function loadLoginForm() {
 
                 if(!sanitizeEmail(username)) {
                     event.preventDefault();
-                    document.getElementById("p-msg").innerHTML = 'Email inserita non valida';
+                    document.getElementById("response-msg").innerHTML = 'Email inserita non valida';
                 } else if (!sanitizePassword(password)) {
                     event.preventDefault();
-                    document.getElementById("p-msg").innerHTML = 'Password inserita non valida';
+                    document.getElementById("response-msg").innerHTML = 'Password inserita non valida';
                 }
 
             });
@@ -69,29 +69,29 @@ function loadLoginForm() {
         });
 
     } else {
-        document.getElementById("p-msg").innerHTML = 'Per effettuare il login occorre abilitare i cookie';
+        document.getElementById("response-msg").innerHTML = 'Per effettuare il login occorre abilitare i cookie';
     }
 
 }
 
-function loadRegisterForm() {
+function loadRegistrationForm() {
     if (testCookie()) {
-        $("#main-div").load("src/app/template/register_form.html", function () {
-            $("#register-form").submit(function (event) {
-                var data = $("#register-form :input").serializeArray();
+        $("#main-div").load("src/app/template/registration_form.html", function () {
+            $("#registration-form").submit(function (event) {
+                var data = $("#registration-form :input").serializeArray();
                 var username = data[0]['value'];
                 var password1 = data[1]['value'];
                 var password2 = data[2]['value'];
 
                 if(!sanitizeEmail(username)) {
                     event.preventDefault();
-                    document.getElementById("p-msg").innerHTML = 'Email inserita non valida';
+                    document.getElementById("response-msg").innerHTML = 'Email inserita non valida';
                 } else if (!sanitizePassword(password1) || !sanitizePassword(password2)) {
                     event.preventDefault();
-                    document.getElementById("p-msg").innerHTML = 'Password inserita non valida';
+                    document.getElementById("response-msg").innerHTML = 'Password inserita non valida';
                 } else if (password1 !== password2) {
                     event.preventDefault();
-                    document.getElementById("p-msg").innerHTML = 'Le password non coincidono';
+                    document.getElementById("response-msg").innerHTML = 'Le password non coincidono';
                 }
 
 
@@ -99,6 +99,6 @@ function loadRegisterForm() {
 
         });
     } else {
-        document.getElementById("p-msg").innerHTML = 'Per effettuare una registrazione occorre abilitare i cookie';
+        document.getElementById("response-msg").innerHTML = 'Per effettuare una registrazione occorre abilitare i cookie';
     }
 }
