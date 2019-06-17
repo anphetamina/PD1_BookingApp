@@ -8,6 +8,8 @@ if (!isset($_SESSION['cookie'])) {
 include "common.php";
 include "db.php";
 
+define('INVALID_INPUT', 'invalidInput');
+
 if (!empty($_POST)) {
 
     if (isset($_POST['action']) && isset($_SESSION['user'])) {

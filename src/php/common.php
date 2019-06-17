@@ -11,6 +11,4 @@ for ($i = 0; $i < $rows; $i++) {
     }
 }
 
-define('INVALID_INPUT', 'invalidInput');
-
 include_once "session.php";
