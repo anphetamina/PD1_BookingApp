@@ -21,6 +21,7 @@ function MapView() {
 
         for (var i = 0; i < N; i++) {
             var row = this.table.insertRow(i);
+
             for (var j = 0; j < M; j++) {
                 var cell = row.insertCell(j);
                 var button = document.createElement('button');

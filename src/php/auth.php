@@ -13,8 +13,8 @@ define('USERNAME_NOT_VALID', 'usernameNotValid');
 
 function login($user, $psw) {
 
-    if (!checkPassword($psw)) return PASSWORD_NOT_VALID;
     if (!checkEmail($user)) return USERNAME_NOT_VALID;
+    if (!checkPassword($psw)) return PASSWORD_NOT_VALID;
 
     $connection = db_get_connection();
     if ($connection === DB_ERROR) {

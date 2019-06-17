@@ -60,17 +60,17 @@ if (!empty($_POST)) {
 </head>
 <body>
 
-<div id="header-div" class="container-fluid bg-dark w-100">
+<div id="header-div" class="container-fluid bg-dark">
     <span class="span-brand">Santoro Airlines</span>
 </div>
-<div id="content-div" class="container-fluid w-100">
+<div id="content-div" class="container-fluid">
     <div class="row">
         <div class="col">
             <h1>Registrazione<i class="fas fa-user-plus right"></i></h1>
         </div>
     </div>
     <div class="row">
-        <nav id="navigation-nav" class="nav flex-column col-2 col-md-2 col-sm-2">
+        <nav id="navigation-nav" class="nav flex-column col-md-2">
 
             <li class="nav-item">
                 <a class="nav-link" href="home.php"><i class="fa fa-plane"></i>Mappa</a>
@@ -131,7 +131,7 @@ if (!empty($_POST)) {
             </p>
         </nav>
 
-        <div id="main-div" class="col-10 col-md-10 col-sm-10 p-3">
+        <div id="main-div" class="col-md-10 p-2 table-responsive-sm">
             <noscript>
                 <p>Per il corretto funzionamento del sito è necessario abilitare javascript</p>
             </noscript>
