@@ -19,11 +19,24 @@ if (!empty($_POST)) {
         $action = $_POST['action'];
         $user = $_SESSION['user'];
 
+        global $seats_check;
+        global $states_check;
+
         switch ($action) {
             case 'updateSeat':
                 if (isset($_POST['id']) && isset($_POST['current_state'])) {
                     $id = $_POST['id'];
                     $current_state = $_POST['current_state'];
+
+                    /*
+                     * if has been injected any $id or $state not valid
+                     * it will exit
+                     * */
+                    if (!in_array($id, $seats_check) || !in_array($current_state, $states_check)) {
+                        // echo INVALID_INPUT;
+                        exit();
+                    }
+
                     echo selectSeat($id, $current_state, $user);
                 }
                 break;
@@ -31,6 +44,19 @@ if (!empty($_POST)) {
             case 'buySeats':
                 if (isset($_POST['selected_seats'])) {
                     $selected_seats = json_decode($_POST['selected_seats']);
+
+                    /*
+                     * check if has been injected any not valid seat $id
+                     * exit if true
+                     * */
+                    foreach ($selected_seats as $index => $id) {
+                        if (!in_array($id, $seats_check)){
+                            // echo INVALID_INPUT;
+                            exit();
+                        }
+                    }
+
+
                     $not_purchased_seats = array();
                     if (!empty($selected_seats)) {
                         $not_purchased_seats = buySeats($selected_seats, $user);

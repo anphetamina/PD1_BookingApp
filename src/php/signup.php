@@ -52,6 +52,8 @@ function registration($user, $psw1, $psw2) {
 
         if (!checkEmail($user)) return USERNAME_NOT_VALID;
 
+
+
         $query = "insert into user (username, password) values (?, ?)";
         if($stmt = $connection->prepare($query)) {
 
@@ -85,11 +87,11 @@ function registration($user, $psw1, $psw2) {
 }
 
 function checkEmail($username) {
-    return filter_var($username, FILTER_VALIDATE_EMAIL) && htmlentities($username)==$username;
+    return filter_var($username, FILTER_VALIDATE_EMAIL) && htmlentities($username)==$username && strip_tags($username)==$username;
 }
 
 function checkPassword($psw) {
-    $pattern = '/^[a-z]+[A-Z0-9]+[a-zA-Z0-9]*|[A-Z0-9]+[a-z]+[a-zA-Z0-9]*$/';
+    $pattern = '/^(?=.*[a-z])(?=.*[A-Z0-9]).{2,}$/';
     if (preg_match($pattern, $psw)) {
         return strlen($psw)>=2 && strlen($psw)<=100;
     }

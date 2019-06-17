@@ -1,6 +1,8 @@
 function MapModel() {
 
-    // todo contatori
+    // todo pattern password
+    // todo pattern email
+    // todo frontend
     // todo sanificare input php strip_tags
 
     MapModel.prototype.init = function (callback) {
