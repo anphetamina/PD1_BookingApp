@@ -51,6 +51,10 @@ function loadMap() {
 function loadLoginForm() {
     if (testCookie()) {
         $("#main-div").load("src/app/template/login_form.html", function (event) {
+            /* action="login.php" method="POST"*/
+            var loginForm = document.getElementById("login-form");
+            loginForm.setAttribute("action", "login.php");
+            loginForm.setAttribute("method", "POST");
             $("#login-form").submit(function (event) {
                 var data = $("#login-form :input").serializeArray();
                 var username = data[0]['value'];
@@ -77,6 +81,10 @@ function loadLoginForm() {
 function loadRegistrationForm() {
     if (testCookie()) {
         $("#main-div").load("src/app/template/registration_form.html", function () {
+            /*action="registration.php" method="POST"*/
+            var registrationForm = document.getElementById("registration-form");
+            registrationForm.setAttribute("action", "registration.php");
+            registrationForm.setAttribute("method", "POST");
             $("#registration-form").submit(function (event) {
                 var data = $("#registration-form :input").serializeArray();
                 var username = data[0]['value'];

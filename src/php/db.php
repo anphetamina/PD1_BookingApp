@@ -4,8 +4,11 @@ include "common.php";
 
 define('HOST', '127.0.0.1');
 define('USER', 'root');
+//define('USER', 's264014');
 define('PASS', '');
+//define('PASS', 'liustrun');
 define('DB', 'booking_app');
+//define('DB', 's264014');
 define('DB_OK', 'dbOk');
 define('DB_ERROR', 'dbError');
 define('NULL', 'null');
