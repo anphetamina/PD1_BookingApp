@@ -95,6 +95,5 @@ function checkPassword($psw) {
     if (preg_match($pattern, $psw)) {
         return strlen($psw)>=2 && strlen($psw)<=100;
     }
-
     return false;
 }
